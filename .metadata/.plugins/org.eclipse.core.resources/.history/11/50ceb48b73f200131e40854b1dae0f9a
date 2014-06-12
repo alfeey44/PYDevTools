@@ -1,0 +1,20 @@
+/**
+ * 
+ */
+package PYDevTools.view;
+
+/**
+ * @author Alfeey
+ *
+ */
+public class ItemBuilder {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
