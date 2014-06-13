@@ -3,24 +3,38 @@
  */
 package PYDevTools.view;
 
+import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.*;
 
 /**
  * @author Alfeey
  *
  */
+@SuppressWarnings("serial")
 public class ItemBuilder extends JFrame {
 	
-	JPanel panel;
+	JTabbedPane tabbedPane;
+	WeaponPanel wepPanel;
+	ArmorPanel armorPanel;
+	MiscPanel miscPanel;
 	
 	private ItemBuilder() {
-		panel = new JPanel();
+		tabbedPane = new JTabbedPane();
+		wepPanel = new WeaponPanel(tabbedPane);
+		armorPanel = new ArmorPanel(tabbedPane);
+		miscPanel = new MiscPanel(tabbedPane);
 		
-		this.add(panel);
+		this.add(tabbedPane);
 	}
 	
 	public static void main(String[] args) {
-
+		initializeFrame();
+		
+	}
+	
+	private static void initializeFrame() {
 		JFrame IBFrame = new ItemBuilder();
 		IBFrame.setTitle("PY ItemBuilder");
 		IBFrame.setSize(1280, 720);
