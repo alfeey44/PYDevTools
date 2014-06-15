@@ -44,13 +44,17 @@ public class ItemBuilder extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		initializeFrame();
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				initializeFrame();
+			}
+		});
 	}
 	
 	private static void initializeFrame() {
 		JFrame IBFrame = new ItemBuilder();
 		IBFrame.setTitle("PY ItemBuilder");
-		IBFrame.setSize(1280, 720);
+		IBFrame.setSize(1440, 800);
 		IBFrame.setLocation(200, 100);
 		IBFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		IBFrame.setVisible(true);
