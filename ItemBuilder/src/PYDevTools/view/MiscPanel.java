@@ -16,6 +16,8 @@ import PYDevTools.utilities.MySQLAccess;
  */
 public class MiscPanel extends JPanel{
 	
+	MySQLAccess db = new MySQLAccess();
+	
 	public MiscPanel() {
 		super();
 		
@@ -23,7 +25,6 @@ public class MiscPanel extends JPanel{
 		// Content //
 		/////////////
 		
-		MySQLAccess db = new MySQLAccess();
 		try {
 			db.getItemFromTemplate(19019);
 		} catch (Exception e) {
