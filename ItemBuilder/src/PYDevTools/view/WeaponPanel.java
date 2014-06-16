@@ -6,6 +6,7 @@ package PYDevTools.view;
 import javax.swing.*;
 
 import PYDevTools.Spring.SpringUtilities;
+import PYDevTools.utilities.ItemIconFinder;
 import PYDevTools.utilities.SceneLoader;
 
 import java.awt.*;
@@ -36,6 +37,8 @@ public class WeaponPanel extends JPanel{
 	private String[] sheaths = { "One Handed", "Two Handed", "Staff", "Ranged", "Wand" };
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
+	
+	private ItemIconFinder iconFinder = new ItemIconFinder();
 	
 	public WeaponPanel() {
 		super(new SpringLayout());
@@ -111,6 +114,7 @@ public class WeaponPanel extends JPanel{
 		// Right Panel
 		rightPanel = new JPanel(new SpringLayout());
 		rightPane = new JScrollPane(rightPanel);
+		System.out.println(iconFinder.findIconByDisplayId(30606));
 		
 		// Add Panels to Weapon Panel
 		mainPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);

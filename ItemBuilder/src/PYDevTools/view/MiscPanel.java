@@ -25,11 +25,11 @@ public class MiscPanel extends JPanel{
 		// Content //
 		/////////////
 		
-		try {
+		/*try {
 			db.getItemFromTemplate(19019);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Item not found with given entry.");
-		}
+		}*/
 	}
 }
