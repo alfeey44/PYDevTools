@@ -8,9 +8,12 @@ import javax.swing.*;
 import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.utilities.ItemIconFinder;
 import PYDevTools.utilities.SceneLoader;
+import PYDevTools.utilities.ImageDrawingComponent;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * @author alfeey44
@@ -22,7 +25,13 @@ public class WeaponPanel extends JPanel{
 	private JSplitPane mainPane;
 	private JScrollPane leftPane, rightPane;
 	private JPanel leftPanel, rightPanel;
-	private String[] labels = { "Name: ", "Description: ", "Quality: ", "Equip: ", "Type: ",
+	private JLabel itemIconLabel, itemToolTipLabel;
+	private ImageDrawingComponent itemIcon, itemToolTip;
+	private String[] toolTipLabels = { "Item Name", "Item Level", "Binds On", "Unique", "Equip", "Type", 
+										"Damage", "Delay", "DPS", "Stats", "Duribility", "Spell Equips",
+										"Required Level", "Sell Price" };
+	private int numTTLabels = toolTipLabels.length;
+	private String[] labels = { "Name: ", "Description: ", "Display", "Quality: ", "Equip: ", "Type: ",
 								"Sheath: ", "Binds: ", "Delay: ", "Armor: ", "Block: ", "Required Level: ",
 								"Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ", "Spells: ",
 								"Sockets: " };
@@ -58,43 +67,43 @@ public class WeaponPanel extends JPanel{
 			leftPanel.add(l);
 			// Non Text Fields
 			switch(i) {
-				case 2:
+				case 3:
 					JComboBox<String> quality = new JComboBox<String>(qualities);
 					quality.setSelectedIndex(0);
 					leftPanel.add(quality);
 					isTextField = false;
 					break;
-				case 3:
+				case 4:
 					JComboBox<String> equip = new JComboBox<String>(equips);
 					equip.setSelectedIndex(0);
 					leftPanel.add(equip);
 					isTextField = false;
 					break;
-				case 4:
+				case 5:
 					JComboBox<String> type = new JComboBox<String>(types);
 					type.setSelectedIndex(0);
 					leftPanel.add(type);
 					isTextField = false;
 					break;
-				case 5:
+				case 6:
 					JComboBox<String> sheath = new JComboBox<String>(sheaths);
 					sheath.setSelectedIndex(0);
 					leftPanel.add(sheath);
 					isTextField = false;
 					break;
-				case 6:
+				case 7:
 					JComboBox<String> bind = new JComboBox<String>(binds);
 					bind.setSelectedIndex(0);
 					leftPanel.add(bind);
 					isTextField = false;
 					break;
-				case 13:
+				case 14:
 					JComboBox<String> role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
 					leftPanel.add(role);
 					isTextField = false;
 					break;
-				case 14:
+				case 15:
 					JList<String> selectedStats = new JList<String>(stats);
 					selectedStats.setSelectedIndex(0);
 					leftPanel.add(selectedStats);
@@ -112,9 +121,39 @@ public class WeaponPanel extends JPanel{
 		SpringUtilities.makeCompactGrid(leftPanel, numLabels, 2, 5, 5, 20, 10);
 		
 		// Right Panel
-		rightPanel = new JPanel(new SpringLayout());
+		SpringLayout rightLayout = new SpringLayout();
+		rightPanel = new JPanel(rightLayout);
 		rightPane = new JScrollPane(rightPanel);
-		System.out.println(iconFinder.findIconByDisplayId(30606));
+		// Item Icon
+		try {
+			itemIcon = new ImageDrawingComponent(new File("src/icons/Inv_misc_questionmark.png").toURI().toURL());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		itemIcon.resize(80, 80);
+		SpringLayout.Constraints iconCons = rightLayout.getConstraints(itemIcon);
+		iconCons.setX(Spring.constant(120));
+		iconCons.setY(Spring.constant(60));
+		rightPanel.add(itemIcon);
+		// Item ToolTip
+		try {
+			itemToolTip = new ImageDrawingComponent(new File("src/icons/tooltip.png").toURI().toURL());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		itemToolTip.resize(400, 30);
+		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
+		toolTipCons.setX(Spring.constant(230));
+		toolTipCons.setY(Spring.constant(60));
+		rightPanel.add(itemToolTip);
+		for (int i = 0; i < numTTLabels; i++) {
+			JLabel l = new JLabel(labels[i], JLabel.TRAILING);
+			l.setForeground(Color.WHITE);
+			l.setLocation(20, (20*i));
+			itemToolTip.add(l);
+		}
 		
 		// Add Panels to Weapon Panel
 		mainPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
