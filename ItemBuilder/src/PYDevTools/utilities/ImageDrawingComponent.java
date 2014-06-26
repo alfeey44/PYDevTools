@@ -3,6 +3,7 @@ package PYDevTools.utilities;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -61,12 +62,13 @@ public class ImageDrawingComponent extends Component {
     public void paint(Graphics g) {
  
         Graphics2D g2 = (Graphics2D) g;
- 
+        
         if (labelList.size() == 0)
-        	g.drawImage(bi, 0, 0, null);
+        	g2.drawImage(bi, 0, 0, null);
         else {
-        	resize(bi.getWidth(), bi.getHeight() + (labelListSize*20));
-        	g.drawImage(bi, 0, 0, null);
+        	this.resize(bi.getWidth(), bi.getHeight() + (labelListSize*20));
+        	g2.drawImage(bi, 0, 0, null);
+        	g2.scale(1.5, 1.5);
         }
         
         for (JLabel l: labelList) {

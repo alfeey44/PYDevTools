@@ -3,17 +3,24 @@
  */
 package PYDevTools.view;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.io.File;
+import java.net.MalformedURLException;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 
 import PYDevTools.Spring.SpringUtilities;
-import PYDevTools.utilities.ItemIconFinder;
-import PYDevTools.utilities.SceneLoader;
 import PYDevTools.utilities.ImageDrawingComponent;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import PYDevTools.utilities.ItemIconFinder;
 
 /**
  * @author alfeey44
@@ -128,7 +135,6 @@ public class WeaponPanel extends JPanel{
 		try {
 			itemIcon = new ImageDrawingComponent(new File("src/icons/Inv_misc_questionmark.png").toURI().toURL());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		itemIcon.resize(80, 80);
@@ -140,18 +146,17 @@ public class WeaponPanel extends JPanel{
 		try {
 			itemToolTip = new ImageDrawingComponent(new File("src/icons/tooltip.png").toURI().toURL());
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		itemToolTip.resize(400, 30);
+		itemToolTip.resize(400, 400);
 		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
-		toolTipCons.setX(Spring.constant(230));
+		toolTipCons.setX(Spring.constant(210));
 		toolTipCons.setY(Spring.constant(60));
 		rightPanel.add(itemToolTip);
 		for (int i = 0; i < numTTLabels; i++) {
 			JLabel l = new JLabel(labels[i], JLabel.TRAILING);
 			l.setForeground(Color.WHITE);
-			l.setLocation(20, (20*i));
+			l.setLocation(10, (20*i) + 15);
 			itemToolTip.add(l);
 		}
 		
