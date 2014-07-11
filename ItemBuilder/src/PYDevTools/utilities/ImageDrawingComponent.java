@@ -8,7 +8,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +83,16 @@ public class ImageDrawingComponent extends Component {
 	public void add(JLabel l) {
 		labelList.add(l);
 		labelListSize += 1;
+	}
+	
+	public void setImage(String path) {
+		try {
+			bi = ImageIO.read((new File(path)).toURI().toURL());
+			repaint();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

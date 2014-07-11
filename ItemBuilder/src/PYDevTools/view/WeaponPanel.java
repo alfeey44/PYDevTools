@@ -5,6 +5,8 @@ package PYDevTools.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.net.MalformedURLException;
 
@@ -26,7 +28,7 @@ import PYDevTools.utilities.ItemIconFinder;
  * @author alfeey44
  *
  */
-public class WeaponPanel extends JPanel{
+public class WeaponPanel extends JPanel implements FocusListener {
 	
 	// Panels
 	private JSplitPane mainPane;
@@ -38,7 +40,7 @@ public class WeaponPanel extends JPanel{
 										"Damage", "Delay", "DPS", "Stats", "Duribility", "Spell Equips",
 										"Required Level", "Sell Price" };
 	private int numTTLabels = toolTipLabels.length;
-	private String[] labels = { "Name: ", "Description: ", "Display", "Quality: ", "Equip: ", "Type: ",
+	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Type: ",
 								"Sheath: ", "Binds: ", "Delay: ", "Armor: ", "Block: ", "Required Level: ",
 								"Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ", "Spells: ",
 								"Sockets: " };
@@ -53,6 +55,7 @@ public class WeaponPanel extends JPanel{
 	private String[] sheaths = { "One Handed", "Two Handed", "Staff", "Ranged", "Wand" };
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
+	private int displayIcon;
 	
 	private ItemIconFinder iconFinder = new ItemIconFinder();
 	
@@ -62,6 +65,8 @@ public class WeaponPanel extends JPanel{
 		/////////////
 		// Content //
 		/////////////
+		
+		displayIcon = 0;
 		
 		// Left Panel
 		leftPanel = new JPanel(new SpringLayout());
@@ -74,6 +79,13 @@ public class WeaponPanel extends JPanel{
 			leftPanel.add(l);
 			// Non Text Fields
 			switch(i) {
+				case 2:
+					JTextField textField = new JTextField(15);
+					textField.addFocusListener(this);
+					l.setLabelFor(textField);
+					leftPanel.add(textField);
+					isTextField = false;
+					break;
 				case 3:
 					JComboBox<String> quality = new JComboBox<String>(qualities);
 					quality.setSelectedIndex(0);
@@ -164,5 +176,20 @@ public class WeaponPanel extends JPanel{
 		mainPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
 		add(mainPane);
 		SpringUtilities.makeCompactGrid(this, 1, 1, 6, 6, 6, 6);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		JTextField displayId = (JTextField)e.getComponent();
+		int displayIdText = Integer.parseInt(displayId.getText());
+		String iconPath = "";
+		if (!displayId.getText().isEmpty()) {
+			iconPath = iconFinder.findIconByDisplayId(displayIdText);
+			System.out.println(iconPath);
+			itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
+		}
 	}
 }
