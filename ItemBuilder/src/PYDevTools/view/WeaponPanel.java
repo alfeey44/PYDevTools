@@ -23,6 +23,7 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import PYDevTools.Spring.SpringUtilities;
+import PYDevTools.db.structures.Item;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemIconFinder;
 
@@ -63,6 +64,7 @@ public class WeaponPanel extends JPanel implements FocusListener {
 	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
 	
 	private ItemIconFinder iconFinder = new ItemIconFinder();
+	private Item item = new Item();
 	
 	public WeaponPanel() {
 		super(new SpringLayout());
@@ -243,4 +245,6 @@ public class WeaponPanel extends JPanel implements FocusListener {
 			}
 		}
 	}
+	
+	
 }
