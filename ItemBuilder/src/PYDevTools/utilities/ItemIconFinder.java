@@ -25,7 +25,7 @@ public class ItemIconFinder {
 		} catch (NullPointerException e) {
 			System.err.println("Did not find an icon for id: " + id);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			System.err.println("Did not find an icon for id: " + id);
 		}
 		
 		return iconName;

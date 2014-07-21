@@ -9,8 +9,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -45,6 +47,9 @@ public class WeaponPanel extends JPanel implements FocusListener {
 								"Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ", "Spells: ",
 								"Sockets: " };
 	private int numLabels = labels.length;
+	private JTextField name, desc, display, delay, armor, block, reqlvl, ilvl, unique, spell, socket;
+	private JComboBox quality, equip, type, sheath, bind, role, resist;
+	private JList<String> selectedStats;
 	private String[] stats = { "Stamina", "Strength", "Agility", "Intellect", "Spirit", "Spell Power", "Attack Power",
 								"Hit Rating", "Crit Rating", "Haste Rating", "Armor Penetration", "Spell Penetration", 
 								"Expertise", "Defense", "Dodge", "Parry", "Resilience", };
@@ -55,7 +60,7 @@ public class WeaponPanel extends JPanel implements FocusListener {
 	private String[] sheaths = { "One Handed", "Two Handed", "Staff", "Ranged", "Wand" };
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
-	private int displayIcon;
+	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
 	
 	private ItemIconFinder iconFinder = new ItemIconFinder();
 	
@@ -66,74 +71,118 @@ public class WeaponPanel extends JPanel implements FocusListener {
 		// Content //
 		/////////////
 		
-		displayIcon = 0;
-		
 		// Left Panel
 		leftPanel = new JPanel(new SpringLayout());
 		leftPane = new JScrollPane(leftPanel);
 		leftPane.setPreferredSize(new Dimension(350, 0));
 		leftPane.getVerticalScrollBar().setUnitIncrement(16);
 		for (int i = 0; i < numLabels; i++) {
-			boolean isTextField = true;
 			JLabel l = new JLabel(labels[i], JLabel.TRAILING);
 			leftPanel.add(l);
-			// Non Text Fields
 			switch(i) {
+				case 0:
+					name = new JTextField(15);
+					l.setLabelFor(name);
+					leftPanel.add(name);
+					break;
+				case 1:
+					desc = new JTextField(15);
+					l.setLabelFor(desc);
+					leftPanel.add(desc);
+					break;
 				case 2:
-					JTextField textField = new JTextField(15);
-					textField.addFocusListener(this);
-					l.setLabelFor(textField);
-					leftPanel.add(textField);
-					isTextField = false;
+					display = new JTextField(15);
+					display.addFocusListener(this);
+					l.setLabelFor(display);
+					leftPanel.add(display);
 					break;
 				case 3:
-					JComboBox<String> quality = new JComboBox<String>(qualities);
+					quality = new JComboBox<String>(qualities);
 					quality.setSelectedIndex(0);
+					l.setLabelFor(quality);
 					leftPanel.add(quality);
-					isTextField = false;
 					break;
 				case 4:
-					JComboBox<String> equip = new JComboBox<String>(equips);
+					equip = new JComboBox<String>(equips);
 					equip.setSelectedIndex(0);
+					l.setLabelFor(equip);
 					leftPanel.add(equip);
-					isTextField = false;
 					break;
 				case 5:
-					JComboBox<String> type = new JComboBox<String>(types);
+					type = new JComboBox<String>(types);
 					type.setSelectedIndex(0);
+					l.setLabelFor(type);
 					leftPanel.add(type);
-					isTextField = false;
 					break;
 				case 6:
-					JComboBox<String> sheath = new JComboBox<String>(sheaths);
+					sheath = new JComboBox<String>(sheaths);
 					sheath.setSelectedIndex(0);
+					l.setLabelFor(sheath);
 					leftPanel.add(sheath);
-					isTextField = false;
 					break;
 				case 7:
-					JComboBox<String> bind = new JComboBox<String>(binds);
+					bind = new JComboBox<String>(binds);
 					bind.setSelectedIndex(0);
+					l.setLabelFor(bind);
 					leftPanel.add(bind);
-					isTextField = false;
+					break;
+				case 8:
+					delay = new JTextField(15);
+					l.setLabelFor(delay);
+					leftPanel.add(delay);
+					break;
+				case 9:
+					armor = new JTextField(15);
+					l.setLabelFor(armor);
+					leftPanel.add(armor);
+					break;
+				case 10:
+					block = new JTextField(15);
+					l.setLabelFor(block);
+					leftPanel.add(block);
+					break;
+				case 11:
+					reqlvl = new JTextField(15);
+					l.setLabelFor(reqlvl);
+					leftPanel.add(reqlvl);
+					break;
+				case 12:
+					ilvl = new JTextField(15);
+					l.setLabelFor(ilvl);
+					leftPanel.add(ilvl);
+					break;
+				case 13:
+					unique = new JTextField(15);
+					l.setLabelFor(unique);
+					leftPanel.add(unique);
 					break;
 				case 14:
-					JComboBox<String> role = new JComboBox<String>(roles);
+					role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
+					l.setLabelFor(role);
 					leftPanel.add(role);
-					isTextField = false;
 					break;
 				case 15:
-					JList<String> selectedStats = new JList<String>(stats);
+					selectedStats = new JList<String>(stats);
 					selectedStats.setSelectedIndex(0);
+					l.setLabelFor(selectedStats);
 					leftPanel.add(selectedStats);
-					isTextField = false;
 					break;
-			}
-			// Default Text Fields
-			if (isTextField) {
-				JTextField textField = new JTextField(15);
-				l.setLabelFor(textField);
-				leftPanel.add(textField);
+				case 16:
+					resist = new JComboBox<String>(resists);
+					l.setLabelFor(resist);
+					leftPanel.add(resist);
+					break;
+				case 17:
+					spell = new JTextField(15);
+					l.setLabelFor(spell);
+					leftPanel.add(spell);
+					break;
+				case 18:
+					socket = new JTextField(15);
+					l.setLabelFor(socket);
+					leftPanel.add(socket);
+					break;
 			}
 		}
 
@@ -184,12 +233,14 @@ public class WeaponPanel extends JPanel implements FocusListener {
 	@Override
 	public void focusLost(FocusEvent e) {
 		JTextField displayId = (JTextField)e.getComponent();
-		int displayIdText = Integer.parseInt(displayId.getText());
 		String iconPath = "";
 		if (!displayId.getText().isEmpty()) {
+			int displayIdText = Integer.parseInt(displayId.getText());
 			iconPath = iconFinder.findIconByDisplayId(displayIdText);
-			System.out.println(iconPath);
-			itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
+			if (!iconPath.isEmpty()) {
+				itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
+				System.out.println("Display Value: " + display.getText());
+			}
 		}
 	}
 }
