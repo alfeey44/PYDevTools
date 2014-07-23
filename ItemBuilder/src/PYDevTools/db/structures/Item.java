@@ -20,7 +20,7 @@ public class Item {
 	public Item() {
 		name = "";
 		description = "";
-		entry = 0;
+		entry = 444444;
 		display = 0;
 		quality = 0;
 		equip = 0;
