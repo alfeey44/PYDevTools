@@ -77,7 +77,6 @@ public class ImageDrawingComponent extends Component {
         	g2.setColor(l.getForeground());
         	g2.drawChars(l.getText().toCharArray(), 0, l.getText().length(), l.getX(), l.getY());
         }
-        
     }
 
 	public void add(JLabel l) {
