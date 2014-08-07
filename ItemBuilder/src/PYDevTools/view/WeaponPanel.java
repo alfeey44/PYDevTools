@@ -49,6 +49,11 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private String[] toolTipLabels = { "Item Name", "Item Level", "Binds On", "Unique", "Equip", "Type", 
 										"Damage", "Delay", "DPS", "Stats", "Duribility", "Spell Equips",
 										"Required Level", "Sell Price" };
+	private JLabel TTname, TTdesc, TTilvl, TTbinds, TTunique, TTequip, TTtype, TTmindamage, TTmaxdamage, TTdelay,
+				   TTDPS, TTstat1, TTstat2, TTstat3, TTstat4, TTstat5, TTstat6, TTstat7, TTstat8,
+				   TTstat9, TTstat10, TTresist1, TTresist2, TTresist3, TTresist4, TTresist5, TTresist6,
+				   TTsocket1, TTsocket2, TTsocket3, TTsocketbonus, TTduribility, TTreqclass, TTreqrace, TTspell1, 
+				   TTspell2, TTspell3, TTspell4, TTspell5, TTreqlvl, TTset, TTsellprice;
 	private int numTTLabels = toolTipLabels.length;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Type: ",
 								"Sheath: ", "Binds: ", "Delay: ", "Armor: ", "Block: ", "Required Level: ",
@@ -92,11 +97,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			switch(i) {
 				case 0:
 					name = new JTextField(15);
+					name.addFocusListener(this);
 					l.setLabelFor(name);
 					leftPanel.add(name);
 					break;
 				case 1:
 					desc = new JTextField(15);
+					desc.addFocusListener(this);
 					l.setLabelFor(desc);
 					leftPanel.add(desc);
 					break;
@@ -109,6 +116,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				case 3:
 					quality = new JComboBox<String>(qualities);
 					quality.setSelectedIndex(0);
+					quality.addActionListener(this);
+					quality.setActionCommand("quality");
 					l.setLabelFor(quality);
 					leftPanel.add(quality);
 					break;
@@ -138,31 +147,37 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					break;
 				case 8:
 					delay = new JTextField(15);
+					delay.addFocusListener(this);
 					l.setLabelFor(delay);
 					leftPanel.add(delay);
 					break;
 				case 9:
 					armor = new JTextField(15);
+					armor.addFocusListener(this);
 					l.setLabelFor(armor);
 					leftPanel.add(armor);
 					break;
 				case 10:
 					block = new JTextField(15);
+					block.addFocusListener(this);
 					l.setLabelFor(block);
 					leftPanel.add(block);
 					break;
 				case 11:
 					reqlvl = new JTextField(15);
+					reqlvl.addFocusListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
 				case 12:
 					ilvl = new JTextField(15);
+					ilvl.addFocusListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
 				case 13:
 					unique = new JTextField(15);
+					unique.addFocusListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
@@ -185,11 +200,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					break;
 				case 17:
 					spell = new JTextField(15);
+					spell.addFocusListener(this);
 					l.setLabelFor(spell);
 					leftPanel.add(spell);
 					break;
 				case 18:
 					socket = new JTextField(15);
+					socket.addFocusListener(this);
 					l.setLabelFor(socket);
 					leftPanel.add(socket);
 					break;
@@ -219,24 +236,187 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		itemToolTip.resize(400, 400);
+		itemToolTip.resize(500, 550);
 		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
 		toolTipCons.setX(Spring.constant(210));
 		toolTipCons.setY(Spring.constant(60));
 		rightPanel.add(itemToolTip);
-		for (int i = 0; i < numTTLabels; i++) {
-			JLabel l = new JLabel(labels[i], JLabel.TRAILING);
-			l.setForeground(Color.WHITE);
-			l.setLocation(10, (20*i) + 15);
-			itemToolTip.add(l);
-		}
+		
+		TTname = new JLabel("", JLabel.TRAILING);
+		TTname.setForeground(Color.WHITE);
+		TTname.setLocation(10, 0);
+		itemToolTip.add(TTname);
+		TTdesc = new JLabel("", JLabel.TRAILING);
+		TTdesc.setForeground(Color.WHITE);
+		TTdesc.setLocation(10, 0);
+		itemToolTip.add(TTdesc);
+		TTilvl = new JLabel("", JLabel.TRAILING);
+		TTilvl.setForeground(Color.YELLOW);
+		TTilvl.setLocation(10, 0);
+		itemToolTip.add(TTilvl);
+		TTbinds = new JLabel("", JLabel.TRAILING);
+		TTbinds.setForeground(Color.WHITE);
+		TTbinds.setLocation(10, 0);
+		itemToolTip.add(TTbinds);
+		TTunique = new JLabel("", JLabel.TRAILING);
+		TTunique.setForeground(Color.WHITE);
+		TTunique.setLocation(10, 0);
+		itemToolTip.add(TTunique);
+		TTequip = new JLabel("", JLabel.TRAILING);
+		TTequip.setForeground(Color.WHITE);
+		TTequip.setLocation(10, 0);
+		itemToolTip.add(TTequip);
+		TTtype = new JLabel("", JLabel.TRAILING);
+		TTtype.setForeground(Color.WHITE);
+		TTtype.setLocation(80, 0);
+		itemToolTip.add(TTtype);
+		TTmindamage = new JLabel("", JLabel.TRAILING);
+		TTmindamage.setForeground(Color.WHITE);
+		TTmindamage.setLocation(10, 0);
+		itemToolTip.add(TTmindamage);
+		TTmaxdamage = new JLabel("", JLabel.TRAILING);
+		TTmaxdamage.setForeground(Color.WHITE);
+		TTmaxdamage.setLocation(20, 0);
+		itemToolTip.add(TTmaxdamage);
+		TTdelay = new JLabel("", JLabel.TRAILING);
+		TTdelay.setForeground(Color.WHITE);
+		TTdelay.setLocation(70, 0);
+		itemToolTip.add(TTdelay);
+		TTDPS = new JLabel("", JLabel.TRAILING);
+		TTDPS.setForeground(Color.WHITE);
+		TTDPS.setLocation(10, 0);
+		itemToolTip.add(TTDPS);
+		TTstat1 = new JLabel("", JLabel.TRAILING);
+		TTstat1.setForeground(Color.WHITE);
+		TTstat1.setLocation(10, 0);
+		itemToolTip.add(TTstat1);
+		TTstat2 = new JLabel("", JLabel.TRAILING);
+		TTstat2.setForeground(Color.WHITE);
+		TTstat2.setLocation(10, 0);
+		itemToolTip.add(TTstat2);
+		TTstat3 = new JLabel("", JLabel.TRAILING);
+		TTstat3.setForeground(Color.WHITE);
+		TTstat3.setLocation(10, 0);
+		itemToolTip.add(TTstat3);
+		TTstat4 = new JLabel("", JLabel.TRAILING);
+		TTstat4.setForeground(Color.WHITE);
+		TTstat4.setLocation(10, 0);
+		itemToolTip.add(TTstat4);
+		TTstat5 = new JLabel("", JLabel.TRAILING);
+		TTstat5.setForeground(Color.WHITE);
+		TTstat5.setLocation(10, 0);
+		itemToolTip.add(TTstat5);
+		TTstat6 = new JLabel("", JLabel.TRAILING);
+		TTstat6.setForeground(Color.WHITE);
+		TTstat6.setLocation(10, 0);
+		itemToolTip.add(TTstat6);
+		TTstat7 = new JLabel("", JLabel.TRAILING);
+		TTstat7.setForeground(Color.WHITE);
+		TTstat7.setLocation(10, 0);
+		itemToolTip.add(TTstat7);
+		TTstat8 = new JLabel("", JLabel.TRAILING);
+		TTstat8.setForeground(Color.WHITE);
+		TTstat8.setLocation(10, 0);
+		itemToolTip.add(TTstat8);
+		TTstat9 = new JLabel("", JLabel.TRAILING);
+		TTstat9.setForeground(Color.WHITE);
+		TTstat9.setLocation(10, 0);
+		itemToolTip.add(TTstat9);
+		TTstat10 = new JLabel("", JLabel.TRAILING);
+		TTstat10.setForeground(Color.WHITE);
+		TTstat10.setLocation(10, 0);
+		itemToolTip.add(TTstat10);
+		TTresist1 = new JLabel("", JLabel.TRAILING);
+		TTresist1.setForeground(Color.WHITE);
+		TTresist1.setLocation(10, 0);
+		itemToolTip.add(TTresist1);
+		TTresist2 = new JLabel("", JLabel.TRAILING);
+		TTresist2.setForeground(Color.WHITE);
+		TTresist2.setLocation(10, 0);
+		itemToolTip.add(TTresist2);
+		TTresist3 = new JLabel("", JLabel.TRAILING);
+		TTresist3.setForeground(Color.WHITE);
+		TTresist3.setLocation(10, 0);
+		itemToolTip.add(TTresist3);
+		TTresist4 = new JLabel("", JLabel.TRAILING);
+		TTresist4.setForeground(Color.WHITE);
+		TTresist4.setLocation(10, 0);
+		itemToolTip.add(TTresist4);
+		TTresist5 = new JLabel("", JLabel.TRAILING);
+		TTresist5.setForeground(Color.WHITE);
+		TTresist5.setLocation(10, 0);
+		itemToolTip.add(TTresist5);
+		TTresist6 = new JLabel("", JLabel.TRAILING);
+		TTresist6.setForeground(Color.WHITE);
+		TTresist6.setLocation(10, 0);
+		itemToolTip.add(TTresist6);
+		TTsocket1 = new JLabel("", JLabel.TRAILING);
+		TTsocket1.setForeground(Color.WHITE);
+		TTsocket1.setLocation(10, 0);
+		itemToolTip.add(TTsocket1);
+		TTsocket2 = new JLabel("", JLabel.TRAILING);
+		TTsocket2.setForeground(Color.WHITE);
+		TTsocket2.setLocation(10, 0);
+		itemToolTip.add(TTsocket2);
+		TTsocket3 = new JLabel("", JLabel.TRAILING);
+		TTsocket3.setForeground(Color.WHITE);
+		TTsocket3.setLocation(10, 0);
+		itemToolTip.add(TTsocket3);
+		TTsocketbonus = new JLabel("", JLabel.TRAILING);
+		TTsocketbonus.setForeground(Color.WHITE);
+		TTsocketbonus.setLocation(10, 0);
+		itemToolTip.add(TTsocketbonus);
+		TTduribility = new JLabel("", JLabel.TRAILING);
+		TTduribility.setForeground(Color.WHITE);
+		TTduribility.setLocation(10, 0);
+		itemToolTip.add(TTduribility);
+		TTreqclass = new JLabel("", JLabel.TRAILING);
+		TTreqclass.setForeground(Color.WHITE);
+		TTreqclass.setLocation(10, 0);
+		itemToolTip.add(TTreqclass);
+		TTreqrace = new JLabel("", JLabel.TRAILING);
+		TTreqrace.setForeground(Color.WHITE);
+		TTreqrace.setLocation(10, 0);
+		itemToolTip.add(TTreqrace);
+		TTspell1 = new JLabel("", JLabel.TRAILING);
+		TTspell1.setForeground(Color.WHITE);
+		TTspell1.setLocation(10, 0);
+		itemToolTip.add(TTspell1);
+		TTspell2 = new JLabel("", JLabel.TRAILING);
+		TTspell2.setForeground(Color.WHITE);
+		TTspell2.setLocation(10, 0);
+		itemToolTip.add(TTspell2);
+		TTspell3 = new JLabel("", JLabel.TRAILING);
+		TTspell3.setForeground(Color.WHITE);
+		TTspell3.setLocation(10, 0);
+		itemToolTip.add(TTspell3);
+		TTspell4 = new JLabel("", JLabel.TRAILING);
+		TTspell4.setForeground(Color.WHITE);
+		TTspell4.setLocation(10, 0);
+		itemToolTip.add(TTspell4);
+		TTspell5 = new JLabel("", JLabel.TRAILING);
+		TTspell5.setForeground(Color.WHITE);
+		TTspell5.setLocation(10, 0);
+		itemToolTip.add(TTspell5);
+		TTreqlvl = new JLabel("", JLabel.TRAILING);
+		TTreqlvl.setForeground(Color.WHITE);
+		TTreqlvl.setLocation(10, 0);
+		itemToolTip.add(TTreqlvl);
+		TTset = new JLabel("", JLabel.TRAILING);
+		TTset.setForeground(Color.WHITE);
+		TTset.setLocation(10, 0);
+		itemToolTip.add(TTset);
+		TTsellprice = new JLabel("", JLabel.TRAILING);
+		TTsellprice.setForeground(Color.WHITE);
+		TTsellprice.setLocation(10, 0);
+		itemToolTip.add(TTsellprice);
 		
 		createItem = new JButton("Craft", createItemImage);
 		createItem.setActionCommand("craft");
 		createItem.addActionListener(this);
 		SpringLayout.Constraints craftCons = rightLayout.getConstraints(createItem);
 		craftCons.setX(Spring.constant(900));
-		craftCons.setY(Spring.constant(585));
+		craftCons.setY(Spring.constant(565));
 		rightPanel.add(createItem);
 		
 		// Add Panels to Weapon Panel
@@ -258,20 +438,80 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				if (!iconPath.isEmpty()) {
 					itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
 					System.out.println("Display Value: " + display.getText());
+					itemIcon.repaint();
 				}
 			}
+			
+		}
+		if (e.getComponent().equals(name)) {
+			TTname.setText(name.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(desc)) {
+			TTdesc.setText(desc.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(delay)) {
+			TTdelay.setText(delay.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(armor)) {
+			//TTarmor.setText(armor.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(block)) {
+			//TTblock.setText(block.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(reqlvl)) {
+			TTreqlvl.setText(reqlvl.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(ilvl)) {
+			TTilvl.setText(ilvl.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(unique)) {
+			TTunique.setText(unique.getText());
+			itemToolTip.repaint();
 		}
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if ("craft".equals(e.getActionCommand())) {
+		if (e.getActionCommand().equals(createItem.getActionCommand())) {
 			// Craft button clicked
 			fillItem();
 			try {
-				db.insertWeaponIntoTemplate(item);
+				if (item.getEntry() != 0 && !db.isUsedEntry(item.getEntry()))
+					db.insertWeaponIntoTemplate(item);
 			} catch (Exception e1) {
 				e1.printStackTrace();
+			}
+		}
+		if (e.getActionCommand().equals(quality.getActionCommand())) {
+			switch (quality.getSelectedIndex()) {
+			case 0:
+				TTname.setForeground(Color.gray);
+				break;
+			case 1:
+				TTname.setForeground(Color.white);
+				break;
+			case 2:
+				TTname.setForeground(Color.green);
+				break;
+			case 3:
+				TTname.setForeground(Color.blue);
+				break;
+			case 4:
+				TTname.setForeground(Color.magenta);
+				break;
+			case 5:
+				TTname.setForeground(Color.orange);
+				break;
+			case 6:
+				TTname.setForeground(Color.yellow);
+				break;
 			}
 		}
 	}

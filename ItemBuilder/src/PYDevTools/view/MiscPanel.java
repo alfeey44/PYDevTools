@@ -25,6 +25,7 @@ public class MiscPanel extends JPanel{
 		// Content //
 		/////////////
 		
+		// Testing Purposes
 		/*try {
 			db.getItemFromTemplate(19019);
 		} catch (Exception e) {
