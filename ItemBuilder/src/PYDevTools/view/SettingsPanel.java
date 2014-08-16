@@ -1,5 +1,6 @@
 package PYDevTools.view;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,65 +24,94 @@ import javax.swing.SpringLayout;
 public class SettingsPanel extends JPanel implements ActionListener {
 	
 	private static SettingsPanel instance = null;
-	private JTextField dbUser, dbName;
+	private JTextField dbUser, dbName, dbHost;
 	private JPasswordField dbPass;
-	private JLabel dbUserLabel, dbPassLabel, dbNameLabel;
+	private JLabel dbUserLabel, dbPassLabel, dbNameLabel, dbHostLabel, saveSuccessLabel,
+				   saveFailLabel;
 	private JButton save;
-	private Font font;
+	private Font defaultFont, saveFont;
 	private String dbUserName = ""; 
 	private String dbPassword = ""; 
 	private String dbWorldName = "";
+	private String dbHostName = "";
 	
 	public SettingsPanel() {
 		super();
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);
 		
-		font = new Font("Arial", Font.PLAIN, 20);
+		defaultFont = new Font("Arial", Font.PLAIN, 20);
+		saveFont = new Font("Arial", Font.ITALIC, 28);
 		
 		// Labels
 		dbUserLabel = new JLabel("DB Username: ");
-		dbUserLabel.setFont(font);
+		dbUserLabel.setFont(defaultFont);
 		SpringLayout.Constraints dbUserLabelCons = layout.getConstraints(dbUserLabel);
 		dbUserLabelCons.setX(Spring.constant(10));
 		dbUserLabelCons.setY(Spring.constant(10));
 		add(dbUserLabel);
 		dbPassLabel = new JLabel("DB Password: ");
-		dbPassLabel.setFont(font);
+		dbPassLabel.setFont(defaultFont);
 		SpringLayout.Constraints dbPassLabelCons = layout.getConstraints(dbPassLabel);
 		dbPassLabelCons.setX(Spring.constant(10));
 		dbPassLabelCons.setY(Spring.constant(40));
 		add(dbPassLabel);
 		dbNameLabel = new JLabel("World DB Name: ");
-		dbNameLabel.setFont(font);
+		dbNameLabel.setFont(defaultFont);
 		SpringLayout.Constraints dbNameLabelCons = layout.getConstraints(dbNameLabel);
 		dbNameLabelCons.setX(Spring.constant(10));
 		dbNameLabelCons.setY(Spring.constant(70));
 		add(dbNameLabel);
+		dbHostLabel = new JLabel("DB Host: ");
+		dbHostLabel.setFont(defaultFont);
+		SpringLayout.Constraints dbHostLabelCons = layout.getConstraints(dbHostLabel);
+		dbHostLabelCons.setX(Spring.constant(10));
+		dbHostLabelCons.setY(Spring.constant(100));
+		add(dbHostLabel);
+		saveSuccessLabel = new JLabel("Settings Saved Successfully!");
+		saveSuccessLabel.setFont(saveFont);
+		SpringLayout.Constraints saveSuccessLabelCons = layout.getConstraints(saveSuccessLabel);
+		saveSuccessLabelCons.setX(Spring.constant(100));
+		saveSuccessLabelCons.setY(Spring.constant(320));
+		saveSuccessLabel.setVisible(false);
+		add(saveSuccessLabel);
+		saveFailLabel = new JLabel("Settings Saved Failed!");
+		saveFailLabel.setFont(saveFont);
+		SpringLayout.Constraints saveFailLabelCons = layout.getConstraints(saveFailLabel);
+		saveSuccessLabelCons.setX(Spring.constant(100));
+		saveSuccessLabelCons.setY(Spring.constant(320));
+		saveFailLabel.setVisible(false);
+		add(saveFailLabel);
 		
 		// TextFields
 		dbUser = new JTextField(15);
-		dbUser.setFont(font);
+		dbUser.setFont(defaultFont);
 		SpringLayout.Constraints dbUserCons = layout.getConstraints(dbUser);
 		dbUserCons.setX(Spring.constant(170));
 		dbUserCons.setY(Spring.constant(10));
 		add(dbUser);
 		dbPass = new JPasswordField(15);
-		dbPass.setFont(font);
+		dbPass.setFont(defaultFont);
 		SpringLayout.Constraints dbPassCons = layout.getConstraints(dbPass);
 		dbPassCons.setX(Spring.constant(170));
 		dbPassCons.setY(Spring.constant(40));
 		add(dbPass);
 		dbName = new JTextField(15);
-		dbName.setFont(font);
+		dbName.setFont(defaultFont);
 		SpringLayout.Constraints dbNameCons = layout.getConstraints(dbName);
 		dbNameCons.setX(Spring.constant(170));
 		dbNameCons.setY(Spring.constant(70));
 		add(dbName);
+		dbHost = new JTextField(15);
+		dbHost.setFont(defaultFont);
+		SpringLayout.Constraints dbHostCons = layout.getConstraints(dbHost);
+		dbHostCons.setX(Spring.constant(170));
+		dbHostCons.setY(Spring.constant(100));
+		add(dbHost);
 		
 		// Button
 		save = new JButton("Save");
-		save.setFont(font);
+		save.setFont(defaultFont);
 		save.setActionCommand("Save");
 		save.addActionListener(this);
 		SpringLayout.Constraints saveCons = layout.getConstraints(save);
@@ -103,9 +133,10 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Save")) {
-			dbUserName = dbUser.getText();
-			dbPassword = dbPass.getPassword().toString();
-			dbWorldName = dbName.getText();
+			dbUserName = getDBUserText();
+			dbPassword = getDBPassText();
+			dbWorldName = getDBNameText();
+			dbHostName = getDBHostText();
 			writeConfigFile();
 		}
 	}
@@ -117,12 +148,19 @@ public class SettingsPanel extends JPanel implements ActionListener {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("pyconfig.conf"), "utf-8"));
 			writer.write(dbUserName + ",");
 			writer.write(dbPassword + ",");
-			writer.write(dbWorldName);
+			writer.write(dbWorldName + ",");
+			writer.write(dbHostName);
 		} catch (IOException e) {
+			saveFailLabel.setForeground(Color.red);
+			saveSuccessLabel.setVisible(false);
+			saveFailLabel.setVisible(true);
 			e.printStackTrace();
 		} finally {
 			try {
 				writer.close();
+				saveSuccessLabel.setForeground(Color.green);
+				saveFailLabel.setVisible(false);
+				saveSuccessLabel.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -151,6 +189,10 @@ public class SettingsPanel extends JPanel implements ActionListener {
 				if (scanner.hasNext()) {
 					setDBWorldName(scanner.next());
 					setDBNameText(getDBWorldName());
+					if (scanner.hasNext()) {
+						setDBHostName(scanner.next());
+						setDBHostText(getDBHostName());
+					}
 				}
 			}
 		}
@@ -161,11 +203,18 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	}
 	
 	public String getDBPassText() {
-		return dbPass.getPassword().toString();
+		// Might want to do password
+		// decrypting instead of printing
+		// actual password text to file
+		return dbPass.getText();
 	}
 	
 	public String getDBNameText() {
 		return dbName.getText();
+	}
+	
+	public String getDBHostText() {
+		return dbHost.getText();
 	}
 	
 	public void setDBUserText(String string) {
@@ -180,6 +229,10 @@ public class SettingsPanel extends JPanel implements ActionListener {
 		dbName.setText(string);
 	}
 	
+	public void setDBHostText(String string) {
+		dbHost.setText(string);
+	}
+	
 	public String getDBUserName() {
 		return dbUserName;
 	}
@@ -192,6 +245,10 @@ public class SettingsPanel extends JPanel implements ActionListener {
 		return dbWorldName;
 	}
 	
+	public String getDBHostName() {
+		return dbHostName;
+	}
+	
 	public void setDBUserName(String string) {
 		dbUserName = string;
 	}
@@ -202,5 +259,17 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	
 	public void setDBWorldName(String string) {
 		dbWorldName = string;
+	}
+	
+	public void setDBHostName(String string) {
+		dbHostName = string;
+	}
+	
+	private String charArrayToString(char[] chars) {
+		String temp = "";
+		for (char c : chars) {
+			temp = temp + c;
+		}
+		return temp;
 	}
 }

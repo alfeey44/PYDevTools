@@ -19,13 +19,13 @@ public class MySQLAccess {
 	private String username = "";
 	private String password = "";
 	private String dbname = "";
-	private String host = "localhost";
+	private String host = "";
 	
 	public MySQLAccess() {
 		username = SettingsPanel.getInstance().getDBUserName();
 		password = SettingsPanel.getInstance().getDBPassword();
 		dbname = SettingsPanel.getInstance().getDBWorldName();
-		//host = SettingsPanel.getInstance().getDBHost();
+		host = SettingsPanel.getInstance().getDBHostName();
 	}
 
 	public void getItemFromTemplate(int entry) throws Exception {

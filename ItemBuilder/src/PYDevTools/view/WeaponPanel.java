@@ -5,6 +5,7 @@ package PYDevTools.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -56,11 +57,11 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				   TTspell2, TTspell3, TTspell4, TTspell5, TTreqlvl, TTset, TTsellprice;
 	private int numTTLabels = toolTipLabels.length;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Type: ",
-								"Sheath: ", "Binds: ", "Delay: ", "Armor: ", "Block: ", "Required Level: ",
-								"Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ", "Spells: ",
-								"Sockets: " };
+								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage", "Armor: ", 
+								"Block: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
+								"Stats: ", "Resists: ", "Spells: ", "Sockets: " };
 	private int numLabels = labels.length;
-	private JTextField name, desc, display, delay, armor, block, reqlvl, ilvl, unique, spell, socket;
+	private JTextField name, desc, display, delay, mindamage, maxdamage, armor, block, reqlvl, ilvl, unique, spell, socket;
 	private JComboBox<String> quality, equip, type, sheath, bind, role, resist;
 	private JList<String> selectedStats;
 	private String[] stats = { "Stamina", "Strength", "Agility", "Intellect", "Spirit", "Spell Power", "Attack Power",
@@ -74,6 +75,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
 	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
+	private JLabel invalidDisplayId;
+	private Font italicFont = new Font("Arial", Font.ITALIC, 14);
 	
 	private ItemIconFinder iconFinder = new ItemIconFinder();
 	private Item item = new Item();
@@ -124,12 +127,16 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				case 4:
 					equip = new JComboBox<String>(equips);
 					equip.setSelectedIndex(0);
+					equip.addActionListener(this);
+					equip.setActionCommand("equips");
 					l.setLabelFor(equip);
 					leftPanel.add(equip);
 					break;
 				case 5:
 					type = new JComboBox<String>(types);
 					type.setSelectedIndex(0);
+					type.addActionListener(this);
+					type.setActionCommand("types");
 					l.setLabelFor(type);
 					leftPanel.add(type);
 					break;
@@ -142,6 +149,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				case 7:
 					bind = new JComboBox<String>(binds);
 					bind.setSelectedIndex(0);
+					bind.addActionListener(this);
+					bind.setActionCommand("binds");
 					l.setLabelFor(bind);
 					leftPanel.add(bind);
 					break;
@@ -152,59 +161,71 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					leftPanel.add(delay);
 					break;
 				case 9:
+					mindamage = new JTextField(15);
+					mindamage.addFocusListener(this);
+					l.setLabelFor(mindamage);
+					leftPanel.add(mindamage);
+					break;
+				case 10:
+					maxdamage = new JTextField(15);
+					maxdamage.addFocusListener(this);
+					l.setLabelFor(maxdamage);
+					leftPanel.add(maxdamage);
+					break;
+				case 11:
 					armor = new JTextField(15);
 					armor.addFocusListener(this);
 					l.setLabelFor(armor);
 					leftPanel.add(armor);
 					break;
-				case 10:
+				case 12:
 					block = new JTextField(15);
 					block.addFocusListener(this);
 					l.setLabelFor(block);
 					leftPanel.add(block);
 					break;
-				case 11:
+				case 13:
 					reqlvl = new JTextField(15);
 					reqlvl.addFocusListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
-				case 12:
+				case 14:
 					ilvl = new JTextField(15);
 					ilvl.addFocusListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
-				case 13:
+				case 15:
 					unique = new JTextField(15);
 					unique.addFocusListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
-				case 14:
+				case 16:
 					role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
 					l.setLabelFor(role);
 					leftPanel.add(role);
 					break;
-				case 15:
+				case 17:
 					selectedStats = new JList<String>(stats);
 					selectedStats.setSelectedIndex(0);
 					l.setLabelFor(selectedStats);
 					leftPanel.add(selectedStats);
 					break;
-				case 16:
+				case 18:
 					resist = new JComboBox<String>(resists);
 					l.setLabelFor(resist);
 					leftPanel.add(resist);
 					break;
-				case 17:
+				case 19:
 					spell = new JTextField(15);
 					spell.addFocusListener(this);
 					l.setLabelFor(spell);
 					leftPanel.add(spell);
 					break;
-				case 18:
+				case 20:
 					socket = new JTextField(15);
 					socket.addFocusListener(this);
 					l.setLabelFor(socket);
@@ -236,7 +257,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		itemToolTip.resize(500, 550);
+		itemToolTip.resize(550, 550);
 		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
 		toolTipCons.setX(Spring.constant(210));
 		toolTipCons.setY(Spring.constant(60));
@@ -244,7 +265,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		
 		TTname = new JLabel("", JLabel.TRAILING);
 		TTname.setForeground(Color.WHITE);
-		TTname.setLocation(10, 0);
+		TTname.setLocation(10, 30);
 		itemToolTip.add(TTname);
 		TTdesc = new JLabel("", JLabel.TRAILING);
 		TTdesc.setForeground(Color.WHITE);
@@ -252,39 +273,36 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		itemToolTip.add(TTdesc);
 		TTilvl = new JLabel("", JLabel.TRAILING);
 		TTilvl.setForeground(Color.YELLOW);
-		TTilvl.setLocation(10, 0);
+		TTilvl.setLocation(10, 60);
 		itemToolTip.add(TTilvl);
 		TTbinds = new JLabel("", JLabel.TRAILING);
 		TTbinds.setForeground(Color.WHITE);
-		TTbinds.setLocation(10, 0);
+		TTbinds.setLocation(10, 90);
 		itemToolTip.add(TTbinds);
 		TTunique = new JLabel("", JLabel.TRAILING);
 		TTunique.setForeground(Color.WHITE);
-		TTunique.setLocation(10, 0);
+		TTunique.setLocation(10, 120);
 		itemToolTip.add(TTunique);
 		TTequip = new JLabel("", JLabel.TRAILING);
 		TTequip.setForeground(Color.WHITE);
-		TTequip.setLocation(10, 0);
+		TTequip.setLocation(10, 150);
 		itemToolTip.add(TTequip);
 		TTtype = new JLabel("", JLabel.TRAILING);
 		TTtype.setForeground(Color.WHITE);
-		TTtype.setLocation(80, 0);
+		TTtype.setLocation(10, 150);
 		itemToolTip.add(TTtype);
 		TTmindamage = new JLabel("", JLabel.TRAILING);
 		TTmindamage.setForeground(Color.WHITE);
-		TTmindamage.setLocation(10, 0);
+		TTmindamage.setLocation(10, 180);
 		itemToolTip.add(TTmindamage);
 		TTmaxdamage = new JLabel("", JLabel.TRAILING);
-		TTmaxdamage.setForeground(Color.WHITE);
-		TTmaxdamage.setLocation(20, 0);
-		itemToolTip.add(TTmaxdamage);
 		TTdelay = new JLabel("", JLabel.TRAILING);
 		TTdelay.setForeground(Color.WHITE);
-		TTdelay.setLocation(70, 0);
+		TTdelay.setLocation(10, 180);
 		itemToolTip.add(TTdelay);
 		TTDPS = new JLabel("", JLabel.TRAILING);
 		TTDPS.setForeground(Color.WHITE);
-		TTDPS.setLocation(10, 0);
+		TTDPS.setLocation(10, 210);
 		itemToolTip.add(TTDPS);
 		TTstat1 = new JLabel("", JLabel.TRAILING);
 		TTstat1.setForeground(Color.WHITE);
@@ -411,6 +429,15 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		TTsellprice.setLocation(10, 0);
 		itemToolTip.add(TTsellprice);
 		
+		invalidDisplayId = new JLabel("Display Id Invalid");
+		invalidDisplayId.setFont(italicFont);
+		invalidDisplayId.setForeground(Color.red);
+		invalidDisplayId.setVisible(false);
+		SpringLayout.Constraints invalidDisplayIdCons = rightLayout.getConstraints(invalidDisplayId);
+		invalidDisplayIdCons.setX(Spring.constant(90));
+		invalidDisplayIdCons.setY(Spring.constant(140));
+		rightPanel.add(invalidDisplayId);
+		
 		createItem = new JButton("Craft", createItemImage);
 		createItem.setActionCommand("craft");
 		createItem.addActionListener(this);
@@ -433,12 +460,24 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		if (e.getComponent().equals(display)) {
 			String iconPath = "";
 			if (!display.getText().isEmpty()) {
-				int displayIdText = Integer.parseInt(display.getText());
+				int displayIdText = 0;
+				try {
+					displayIdText = Integer.parseInt(display.getText());
+				} catch (NumberFormatException ex) {
+					// Display Id invalid
+					invalidDisplayId.setVisible(true);
+					itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
+				}
 				iconPath = iconFinder.findIconByDisplayId(displayIdText);
 				if (!iconPath.isEmpty()) {
+					invalidDisplayId.setVisible(false);
 					itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
 					System.out.println("Display Value: " + display.getText());
 					itemIcon.repaint();
+				} else {
+					// Display Id invalid
+					invalidDisplayId.setVisible(true);
+					itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
 				}
 			}
 			
@@ -452,7 +491,17 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			itemToolTip.repaint();
 		}
 		if (e.getComponent().equals(delay)) {
-			TTdelay.setText(delay.getText());
+			TTmindamage.setVisible(false);
+			float delayInSecs = Float.parseFloat(delay.getText());
+			TTdelay.setText(TTmindamage.getText() + "                                    Speed " + String.format("%.2g%n", delayInSecs/1000.00f));
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(mindamage)) {
+			TTmindamage.setText(mindamage.getText());
+			itemToolTip.repaint();
+		}
+		if (e.getComponent().equals(maxdamage)) {
+			TTmindamage.setText(mindamage.getText() + " - " + maxdamage.getText() + " Damage");
 			itemToolTip.repaint();
 		}
 		if (e.getComponent().equals(armor)) {
@@ -468,11 +517,25 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			itemToolTip.repaint();
 		}
 		if (e.getComponent().equals(ilvl)) {
-			TTilvl.setText(ilvl.getText());
+			TTilvl.setText("Item Level " + ilvl.getText());
 			itemToolTip.repaint();
 		}
 		if (e.getComponent().equals(unique)) {
-			TTunique.setText(unique.getText());
+			int uniqueNum = 0;
+			try {
+				uniqueNum = Integer.parseInt(unique.getText());
+				
+				if (uniqueNum == 1)
+					TTunique.setText("Unique");
+				else if (uniqueNum == 0)
+					TTunique.setText("");
+				else
+					TTunique.setText("Unique-" + unique.getText());
+			} catch (NumberFormatException ex) {
+				// TODO
+				// Print Error Message
+				ex.printStackTrace();
+			}
 			itemToolTip.repaint();
 		}
 	}
@@ -513,6 +576,101 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				TTname.setForeground(Color.yellow);
 				break;
 			}
+			itemToolTip.repaint();
+		}
+		
+		if (e.getActionCommand().equals(bind.getActionCommand())) {
+			switch (bind.getSelectedIndex()) {
+			case 0:
+				TTbinds.setText("None");
+				break;
+			case 1:
+				TTbinds.setText("Binds when picked up");
+				break;
+			case 2:
+				TTbinds.setText("Binds when equipped");
+				break;
+			case 3:
+				TTbinds.setText("Binds when used");
+				break;
+			}
+			itemToolTip.repaint();
+		}
+		
+		if (e.getActionCommand().equals(equip.getActionCommand())) {
+			switch (equip.getSelectedIndex()) {
+			case 0:
+				TTequip.setText("One-Hand");
+				break;
+			case 1:
+				TTequip.setText("Main-Hand");
+				break;
+			case 2:
+				TTequip.setText("Off-Hand");
+				break;
+			case 3:
+				TTequip.setText("Two-Handed");
+				break;
+			case 4:
+			case 5:
+			case 7:
+			case 8:
+				TTequip.setText("Ranged");
+				break;
+			case 6:
+				TTequip.setText("Thrown");
+				break;
+			}
+			itemToolTip.repaint();
+		}
+		
+		if (e.getActionCommand().equals(type.getActionCommand())) {
+			TTequip.setVisible(false);
+			switch (type.getSelectedIndex()) {
+			case 0:
+			case 1:
+				TTtype.setText(TTequip.getText() + "                                             " + "Axe");
+				break;
+			case 2:
+				TTtype.setText(TTequip.getText() + "                                             " + "Bow");
+				break;
+			case 3:
+				TTtype.setText(TTequip.getText() + "                                             " + "Gun");
+				break;
+			case 4:
+			case 5:
+				TTtype.setText(TTequip.getText() + "                                             " + "Mace");
+				break;
+			case 6:
+				TTtype.setText(TTequip.getText() + "                                             " + "Polearm");
+				break;
+			case 7:
+			case 8:
+				TTtype.setText(TTequip.getText() + "                                             " + "Sword");
+				break;
+			case 9:
+				TTtype.setText(TTequip.getText() + "                                             " + "Staff");
+				break;
+			case 10:
+				TTtype.setText(TTequip.getText() + "                                             " + "Fist");
+				break;
+			case 11:
+				TTtype.setText(TTequip.getText() + "                                             " + "Dagger");
+				break;
+			case 12:
+				TTtype.setText(TTequip.getText() + "                                             " + "Throwing");
+				break;
+			case 13:
+				TTtype.setText(TTequip.getText() + "                                             " + "Spear");
+				break;
+			case 14:
+				TTtype.setText(TTequip.getText() + "                                             " + "Crossbow");
+				break;
+			case 15:
+				TTtype.setText(TTequip.getText() + "                                             " + "Wand");
+				break;
+			}
+			itemToolTip.repaint();
 		}
 	}
 	

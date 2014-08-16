@@ -24,6 +24,7 @@ public class ImageDrawingComponent extends Component {
     private ArrayList<JLabel> labelList = new ArrayList<JLabel>();
     private int labelListSize = 0;
     private int w, h;
+    private Font defaultFont = new Font("Arial", Font.PLAIN, 24);
  
     public ImageDrawingComponent(URL imageSrc) {
         try {
@@ -68,13 +69,13 @@ public class ImageDrawingComponent extends Component {
         if (labelList.size() == 0)
         	g2.drawImage(bi, 0, 0, null);
         else {
-        	this.resize(bi.getWidth(), bi.getHeight() + (labelListSize*20));
+        	//resize(bi.getWidth(), bi.getHeight());
         	g2.drawImage(bi, 0, 0, null);
-        	g2.scale(1.5, 1.5);
         }
         
         for (JLabel l: labelList) {
         	g2.setColor(l.getForeground());
+        	g2.setFont(defaultFont);
         	g2.drawChars(l.getText().toCharArray(), 0, l.getText().length(), l.getX(), l.getY());
         }
     }
