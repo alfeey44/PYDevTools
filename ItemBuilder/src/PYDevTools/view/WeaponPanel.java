@@ -629,45 +629,45 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			switch (type.getSelectedIndex()) {
 			case 0:
 			case 1:
-				TTtype.setText(TTequip.getText() + "                                             " + "Axe");
+				TTtype.setText(TTequip.getText() + "                                                  " + "Axe");
 				break;
 			case 2:
-				TTtype.setText(TTequip.getText() + "                                             " + "Bow");
+				TTtype.setText(TTequip.getText() + "                                                  " + "Bow");
 				break;
 			case 3:
-				TTtype.setText(TTequip.getText() + "                                             " + "Gun");
+				TTtype.setText(TTequip.getText() + "                                                  " + "Gun");
 				break;
 			case 4:
 			case 5:
-				TTtype.setText(TTequip.getText() + "                                             " + "Mace");
+				TTtype.setText(TTequip.getText() + "                                                 " + "Mace");
 				break;
 			case 6:
 				TTtype.setText(TTequip.getText() + "                                             " + "Polearm");
 				break;
 			case 7:
 			case 8:
-				TTtype.setText(TTequip.getText() + "                                             " + "Sword");
+				TTtype.setText(TTequip.getText() + "                                                " + "Sword");
 				break;
 			case 9:
-				TTtype.setText(TTequip.getText() + "                                             " + "Staff");
+				TTtype.setText(TTequip.getText() + "                                                " + "Staff");
 				break;
 			case 10:
-				TTtype.setText(TTequip.getText() + "                                             " + "Fist");
+				TTtype.setText(TTequip.getText() + "                                                " + "Fist");
 				break;
 			case 11:
-				TTtype.setText(TTequip.getText() + "                                             " + "Dagger");
+				TTtype.setText(TTequip.getText() + "                                              " + "Dagger");
 				break;
 			case 12:
 				TTtype.setText(TTequip.getText() + "                                             " + "Throwing");
 				break;
 			case 13:
-				TTtype.setText(TTequip.getText() + "                                             " + "Spear");
+				TTtype.setText(TTequip.getText() + "                                               " + "Spear");
 				break;
 			case 14:
 				TTtype.setText(TTequip.getText() + "                                             " + "Crossbow");
 				break;
 			case 15:
-				TTtype.setText(TTequip.getText() + "                                             " + "Wand");
+				TTtype.setText(TTequip.getText() + "                                               " + "Wand");
 				break;
 			}
 			itemToolTip.repaint();
