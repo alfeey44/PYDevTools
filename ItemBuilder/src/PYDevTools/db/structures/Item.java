@@ -2,9 +2,11 @@ package PYDevTools.db.structures;
 
 public class Item {
 	private String name, description;
-	private int entry, display, quality, equip, type, sheath, binds, delay,
-				armor, block, reqlvl, ilvl, unique, holy_resist, fire_resist,
-				nature_resist, frost_resist, shadow_resist, arcane_resist;
+	private int entry, class_, display, quality, inventoryType, subclass, sheath, binds, delay,
+				armor, block, reqlvl, ilvl, unique, statsCount, holy_resist, fire_resist,
+				nature_resist, frost_resist, shadow_resist, arcane_resist, mindamage, maxdamage,
+				duribility;
+
 	private int[] stat_values;
 	private int[] stat_types;
 	private int[] spell_ids;
@@ -19,8 +21,9 @@ public class Item {
 		entry = 0;
 		display = 0;
 		quality = 0;
-		equip = 0;
-		type = 0;
+		inventoryType = 0;
+		class_ = 0;
+		subclass = 0;
 		sheath = 0;
 		binds = 0;
 		delay = 0;
@@ -29,6 +32,7 @@ public class Item {
 		reqlvl = 0;
 		ilvl = 0;
 		unique = 0;
+		statsCount = 0;
 		stat_types = new int[10];
 		stat_values = new int[10];
 		for (int i = 0; i < 10; i++) {
@@ -58,18 +62,44 @@ public class Item {
 			socket_colors[i] = 0;
 			socket_contents[i] = 0;
 		}
+		
+		duribility = 0;
 	}
 
 	////////////////////////////////
 	////// Getters and Setters /////
 	////////////////////////////////
 	
+	public int getSubclass() {
+		return subclass;
+	}
+
+	public void setSubclass(int subclass) {
+		this.subclass = subclass;
+	}
+
+	public int getStatsCount() {
+		return statsCount;
+	}
+
+	public void setStatsCount(int statsCount) {
+		this.statsCount = statsCount;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public int getClass_() {
+		return class_;
+	}
+
+	public void setClass_(int class_) {
+		this.class_ = class_;
 	}
 
 	public String getDescription() {
@@ -104,20 +134,20 @@ public class Item {
 		this.quality = quality;
 	}
 
-	public int getEquip() {
-		return equip;
+	public int getInventoryType() {
+		return inventoryType;
 	}
 
-	public void setEquip(int equip) {
-		this.equip = equip;
+	public void setInventoryType(int inventoryType) {
+		this.inventoryType = inventoryType;
 	}
 
-	public int getType() {
-		return type;
+	public int getsubclass() {
+		return subclass;
 	}
 
-	public void setType(int type) {
-		this.type = type;
+	public void setsubclass(int subclass) {
+		this.subclass = subclass;
 	}
 
 	public int getSheath() {
@@ -286,5 +316,29 @@ public class Item {
 
 	public void setSocket_content(int index, int socket_content) {
 		this.socket_contents[index] = socket_content;
+	}
+	
+	public int getMindamage() {
+		return mindamage;
+	}
+
+	public void setMindamage(int mindamage) {
+		this.mindamage = mindamage;
+	}
+
+	public int getMaxdamage() {
+		return maxdamage;
+	}
+
+	public void setMaxdamage(int maxdamage) {
+		this.maxdamage = maxdamage;
+	}
+
+	public int getDuribility() {
+		return duribility;
+	}
+
+	public void setDuribility(int duribility) {
+		this.duribility = duribility;
 	}
 }

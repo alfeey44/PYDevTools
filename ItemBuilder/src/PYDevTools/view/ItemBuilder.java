@@ -30,6 +30,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	WeaponPanel wepPanel;
 	ArmorPanel armorPanel;
 	MiscPanel miscPanel;
+	DbPanel dbPanel;
 	static SettingsPanel settingsPanel;
 	ImageIcon weaponTabIcon, armorTabIcon, miscTabIcon;
 	JMenuBar menuBar;
