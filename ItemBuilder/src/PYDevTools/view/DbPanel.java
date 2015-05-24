@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -109,9 +110,9 @@ public class DbPanel extends JPanel implements ActionListener {
 				int selectedRow = itemsTable.getSelectedRow();
 				int selectedEntry = Integer.parseInt((String) itemsTable.getValueAt(selectedRow, 0));
 				
-				Iterator<HashMap.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
+				Iterator<Map.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
 				while(iterator.hasNext()){
-				   HashMap.Entry<Item, ItemToolTip> entry = iterator.next();
+				   Map.Entry<Item, ItemToolTip> entry = iterator.next();
 				   if (entry.getKey().getEntry() == selectedEntry) {
 					   remove(currentTT);
 					   currentTT = entry.getValue();
@@ -157,9 +158,9 @@ public class DbPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Search")) {
 			// Remove current list of items
-			Iterator<HashMap.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
+			Iterator<Map.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
 			while(iterator.hasNext()){
-			   HashMap.Entry<Item, ItemToolTip> entry = iterator.next();
+			   Map.Entry<Item, ItemToolTip> entry = iterator.next();
 			   remove(entry.getValue());
 			   iterator.remove(); // right way to remove entries from Map, 
 			}

@@ -52,10 +52,14 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ",
 								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Armor: ", 
 								"Block: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
-								"Stats: ", "Resists: ", "Spells: ", "Sockets: " };
+								"Stats: ", "Resists: ", "Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ",
+								"Spell 3: ", "Spell 3 Trigger: ", "Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", 
+								"Sockets: " };
 	private int numLabels = labels.length;
-	private JTextField name, desc, display, delay, mindamage, maxdamage, armor, block, reqlvl, ilvl, unique, spell, socket;
-	private JComboBox<String> quality, equip, subclass, sheath, bind, role;
+	private JTextField name, desc, display, delay, mindamage, maxdamage, armor, block, reqlvl, 
+					   ilvl, unique, spell1, spell2, spell3, spell4, spell5, socket;
+	private JComboBox<String> quality, equip, subclass, sheath, bind, role, spelltrigger1, spelltrigger2,
+	   						  spelltrigger3, spelltrigger4, spelltrigger5;
 	private JList<String> selectedStats;
 	private String[] stats = { "Stamina", "Strength", "Agility", "Intellect", "Spirit", "Spell Power", "Attack Power",
 								"Hit Rating", "Crit Rating", "Haste Rating", "Armor Penetration", "Spell Penetration", 
@@ -68,6 +72,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
 	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
+	private String[] spelltriggers = { "Use", "On Equip", "Chance on Hit" };
 	private JList<String> selectedResists;
 	private JLabel invalidDisplayId;
 	private Font italicFont = new Font("Arial", Font.ITALIC, 14);
@@ -98,43 +103,34 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			switch(i) {
 				case 0:
 					name = new JTextField(15);
-					name.addFocusListener(this);
 					l.setLabelFor(name);
 					leftPanel.add(name);
 					break;
 				case 1:
 					desc = new JTextField(15);
-					desc.addFocusListener(this);
 					l.setLabelFor(desc);
 					leftPanel.add(desc);
 					break;
 				case 2:
 					display = new JTextField(15);
-					display.addFocusListener(this);
 					l.setLabelFor(display);
 					leftPanel.add(display);
 					break;
 				case 3:
 					quality = new JComboBox<String>(qualities);
 					quality.setSelectedIndex(0);
-					quality.addActionListener(this);
-					quality.setActionCommand("quality");
 					l.setLabelFor(quality);
 					leftPanel.add(quality);
 					break;
 				case 4:
 					equip = new JComboBox<String>(equips);
 					equip.setSelectedIndex(0);
-					equip.addActionListener(this);
-					equip.setActionCommand("equips");
 					l.setLabelFor(equip);
 					leftPanel.add(equip);
 					break;
 				case 5:
 					subclass = new JComboBox<String>(subclasses);
 					subclass.setSelectedIndex(0);
-					subclass.addActionListener(this);
-					subclass.setActionCommand("subclasss");
 					l.setLabelFor(subclass);
 					leftPanel.add(subclass);
 					break;
@@ -147,56 +143,46 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				case 7:
 					bind = new JComboBox<String>(binds);
 					bind.setSelectedIndex(0);
-					bind.addActionListener(this);
-					bind.setActionCommand("binds");
 					l.setLabelFor(bind);
 					leftPanel.add(bind);
 					break;
 				case 8:
 					delay = new JTextField(15);
-					delay.addFocusListener(this);
 					l.setLabelFor(delay);
 					leftPanel.add(delay);
 					break;
 				case 9:
 					mindamage = new JTextField(15);
-					mindamage.addFocusListener(this);
 					l.setLabelFor(mindamage);
 					leftPanel.add(mindamage);
 					break;
 				case 10:
 					maxdamage = new JTextField(15);
-					maxdamage.addFocusListener(this);
 					l.setLabelFor(maxdamage);
 					leftPanel.add(maxdamage);
 					break;
 				case 11:
 					armor = new JTextField(15);
-					armor.addFocusListener(this);
 					l.setLabelFor(armor);
 					leftPanel.add(armor);
 					break;
 				case 12:
 					block = new JTextField(15);
-					block.addFocusListener(this);
 					l.setLabelFor(block);
 					leftPanel.add(block);
 					break;
 				case 13:
 					reqlvl = new JTextField(15);
-					reqlvl.addFocusListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
 				case 14:
 					ilvl = new JTextField(15);
-					ilvl.addFocusListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
 				case 15:
 					unique = new JTextField(15);
-					unique.addFocusListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
@@ -217,14 +203,62 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					leftPanel.add(selectedResists);
 					break;
 				case 19:
-					spell = new JTextField(15);
-					spell.addFocusListener(this);
-					l.setLabelFor(spell);
-					leftPanel.add(spell);
+					spell1 = new JTextField(15);
+					l.setLabelFor(spell1);
+					leftPanel.add(spell1);
 					break;
 				case 20:
+					spelltrigger1 = new JComboBox<String>(spelltriggers);
+					spelltrigger1.setSelectedIndex(0);
+					l.setLabelFor(spelltrigger1);
+					leftPanel.add(spelltrigger1);
+					break;
+				case 21:
+					spell2 = new JTextField(15);
+					l.setLabelFor(spell2);
+					leftPanel.add(spell2);
+					break;
+				case 22:
+					spelltrigger2 = new JComboBox<String>(spelltriggers);
+					spelltrigger2.setSelectedIndex(0);
+					l.setLabelFor(spelltrigger2);
+					leftPanel.add(spelltrigger2);
+					break;
+				case 23:
+					spell3 = new JTextField(15);
+					l.setLabelFor(spell3);
+					leftPanel.add(spell3);
+					break;
+				case 24:
+					spelltrigger3 = new JComboBox<String>(spelltriggers);
+					spelltrigger3.setSelectedIndex(0);
+					l.setLabelFor(spelltrigger3);
+					leftPanel.add(spelltrigger3);
+					break;
+				case 25:
+					spell4 = new JTextField(15);
+					l.setLabelFor(spell4);
+					leftPanel.add(spell4);
+					break;
+				case 26:
+					spelltrigger4 = new JComboBox<String>(spelltriggers);
+					spelltrigger4.setSelectedIndex(0);
+					l.setLabelFor(spelltrigger4);
+					leftPanel.add(spelltrigger4);
+					break;
+				case 27:
+					spell5 = new JTextField(15);
+					l.setLabelFor(spell5);
+					leftPanel.add(spell5);
+					break;
+				case 28:
+					spelltrigger5 = new JComboBox<String>(spelltriggers);
+					spelltrigger5.setSelectedIndex(0);
+					l.setLabelFor(spelltrigger5);
+					leftPanel.add(spelltrigger5);
+					break;
+				case 29:
 					socket = new JTextField(15);
-					socket.addFocusListener(this);
 					l.setLabelFor(socket);
 					leftPanel.add(socket);
 					break;
@@ -310,6 +344,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 
     /** Fills item class with fields from panel **/
     private void fillItem() {
+    	item = new Item();
     	// Crafting a weapon
     	item.setClass_(2);
     	
@@ -751,12 +786,50 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	}
     	   	
     	// Spells
-    	if (!spell.getText().isEmpty()) {
-    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell.getText()));
+    	if (!spell1.getText().isEmpty()) {
+    		int spellindex = 0;
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell1.getText()));
     		System.out.println("Spell Description: " + spellDesc);
-    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell.getText()));
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell1.getText()));
     		System.out.println("Spell Icon: " + spellIcon);
-    		item.setSpell_id(0, Integer.parseInt(spell.getText()));
+    		item.setSpell_id(spellindex, Integer.parseInt(spell1.getText()));
+    		item.setSpell_trigger(spellindex, spelltrigger1.getSelectedIndex());
+    	}
+    	if (!spell2.getText().isEmpty()) {
+    		int spellindex = 1;
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell2.getText()));
+    		System.out.println("Spell Description: " + spellDesc);
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell2.getText()));
+    		System.out.println("Spell Icon: " + spellIcon);
+    		item.setSpell_id(1, Integer.parseInt(spell2.getText()));
+    		item.setSpell_trigger(spellindex, spelltrigger2.getSelectedIndex());
+    	}
+    	if (!spell3.getText().isEmpty()) {
+    		int spellindex = 2;
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell3.getText()));
+    		System.out.println("Spell Description: " + spellDesc);
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell3.getText()));
+    		System.out.println("Spell Icon: " + spellIcon);
+    		item.setSpell_id(2, Integer.parseInt(spell3.getText()));
+    		item.setSpell_trigger(spellindex, spelltrigger3.getSelectedIndex());
+    	}
+    	if (!spell4.getText().isEmpty()) {
+    		int spellindex = 3;
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell4.getText()));
+    		System.out.println("Spell Description: " + spellDesc);
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell4.getText()));
+    		System.out.println("Spell Icon: " + spellIcon);
+    		item.setSpell_id(3, Integer.parseInt(spell4.getText()));
+    		item.setSpell_trigger(spellindex, spelltrigger4.getSelectedIndex());
+    	}
+    	if (!spell5.getText().isEmpty()) {
+    		int spellindex = 4;
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell5.getText()));
+    		System.out.println("Spell Description: " + spellDesc);
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell5.getText()));
+    		System.out.println("Spell Icon: " + spellIcon);
+    		item.setSpell_id(4, Integer.parseInt(spell5.getText()));
+    		item.setSpell_trigger(spellindex, spelltrigger5.getSelectedIndex());
     	}
     	
     	// Sockets

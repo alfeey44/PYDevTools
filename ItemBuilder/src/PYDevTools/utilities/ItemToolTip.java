@@ -198,20 +198,24 @@ public class ItemToolTip extends ImageDrawingComponent {
 		
 		switch (item.getBinds()) {
 		case 0:
-			TTbinds.setText("None");
+			TTbinds.setText("");
 			break;
 		case 1:
 			TTbinds.setText("Binds when picked up");
+			incrementLines();
+			TTbinds.setLocation(10, toolTipHeight);
 			break;
 		case 2:
 			TTbinds.setText("Binds when equipped");
+			incrementLines();
+			TTbinds.setLocation(10, toolTipHeight);
 			break;
 		case 3:
 			TTbinds.setText("Binds when used");
+			incrementLines();
+			TTbinds.setLocation(10, toolTipHeight);
 			break;
 		}
-		incrementLines();
-		TTbinds.setLocation(10, toolTipHeight);
 		
 		if (item.getUnique() == 1) {
 			TTunique.setText("Unique");
@@ -340,7 +344,10 @@ public class ItemToolTip extends ImageDrawingComponent {
 				TTdelay.setLocation(410, toolTipHeight);
 				
 				// rough dps
-				float dps = round(((item.getMinDamage() + item.getMaxDamage())/2) / (item.getDelay()/1000), 2);
+				float dps = (item.getMinDamage() + item.getMaxDamage());
+				dps /= 2;
+				dps /= ((float)item.getDelay()/1000);
+				dps = round(dps, 2);
 				
 				incrementLines();
 				TTDPS.setText("(" + dps + " damage per second)");
