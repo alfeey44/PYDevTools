@@ -142,14 +142,6 @@ public class Item {
 		this.inventoryType = inventoryType;
 	}
 
-	public int getsubclass() {
-		return subclass;
-	}
-
-	public void setsubclass(int subclass) {
-		this.subclass = subclass;
-	}
-
 	public int getSheath() {
 		return sheath;
 	}
@@ -318,19 +310,19 @@ public class Item {
 		this.socket_contents[index] = socket_content;
 	}
 	
-	public int getMindamage() {
+	public int getMinDamage() {
 		return mindamage;
 	}
 
-	public void setMindamage(int mindamage) {
+	public void setMinDamage(int mindamage) {
 		this.mindamage = mindamage;
 	}
 
-	public int getMaxdamage() {
+	public int getMaxDamage() {
 		return maxdamage;
 	}
 
-	public void setMaxdamage(int maxdamage) {
+	public void setMaxDamage(int maxdamage) {
 		this.maxdamage = maxdamage;
 	}
 

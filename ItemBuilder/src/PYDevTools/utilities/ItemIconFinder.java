@@ -9,54 +9,66 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class ItemIconFinder {
+	private static ItemIconFinder instance = null;
+	private HashMap<Integer, String> itemIcons;
 	
 	private final String path = "src/icons/ItemDisplayInfo.dbc.txt";
-	private final static Charset ENCODING = StandardCharsets.UTF_8;  
-
-	public String findIconByDisplayId(int id) {
-		String iconName = "";
-		
-		try {
-			iconName = processFile(Integer.toString(id));
-		} catch (NullPointerException e) {
-			System.err.println("Did not find an icon for id: " + id);
-		} catch (IOException ioe) {
-			System.err.println("Did not find an icon for id: " + id);
+	private final static Charset ENCODING = StandardCharsets.UTF_8;
+	
+	public static ItemIconFinder getInstance() {
+		if (instance == null) {
+			instance = new ItemIconFinder();
 		}
-		
-		return iconName;
+		return instance;
 	}
 	
-	private String processLine(String aLine, String displayId) {
+	protected ItemIconFinder() {
+		itemIcons = new HashMap<Integer, String>();
+		
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// fills itemIcons HashMap
+				processFile(path);
+			}
+		});
+
+		t.start();
+	}
+
+	public String findIconByDisplayId(int id) {
+		return itemIcons.get(id);
+	}
+	
+	private void processLine(String aLine, String displayId) {
 		String icon = "";
 		String id = "";
 		Scanner scanner = new Scanner(aLine);
 		scanner.useDelimiter(",");
 		if (scanner.hasNext()) {
 			id = scanner.next();
-			if (scanner.hasNext())
+			if (scanner.hasNext()) {
 				icon = scanner.next();
-			if (id.equals(displayId))
-				return icon;
-		}
-		return null;
-	}
-	
-	private String processFile(String displayId) throws IOException {
-		String iconName;
-		try (Scanner scanner = new Scanner(Paths.get(path), ENCODING.name())) {
-			while (scanner.hasNextLine()) {
-				iconName = processLine(scanner.nextLine(), displayId);
-				if (iconName != null)
-					return iconName;
+				if (!id.isEmpty() && !icon.isEmpty()) {
+					itemIcons.put(Integer.parseInt(id), icon);
+				}
 			}
 		}
-		throw null;
 	}
 	
-	
+	private void processFile(String displayId) {
+		try (Scanner scanner = new Scanner(Paths.get(path), ENCODING.name())) {
+			while (scanner.hasNextLine()) {
+				processLine(scanner.nextLine(), displayId);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

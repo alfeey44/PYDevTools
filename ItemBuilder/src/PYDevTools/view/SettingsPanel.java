@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -21,9 +23,13 @@ import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
+import PYDevTools.utilities.AESEncrypt;
+
+@SuppressWarnings("serial")
 public class SettingsPanel extends JPanel implements ActionListener {
 	
 	private static SettingsPanel instance = null;
+	private static JFrame settingsFrame;
 	private JTextField dbUser, dbName, dbHost;
 	private JPasswordField dbPass;
 	private JLabel dbUserLabel, dbPassLabel, dbNameLabel, dbHostLabel, saveSuccessLabel,
@@ -35,7 +41,7 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	private String dbWorldName = "";
 	private String dbHostName = "";
 	
-	public SettingsPanel() {
+	protected SettingsPanel() {
 		super();
 		SpringLayout layout = new SpringLayout();
 		setLayout(layout);
@@ -133,11 +139,16 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("Save")) {
-			dbUserName = getDBUserText();
-			dbPassword = getDBPassText();
-			dbWorldName = getDBNameText();
-			dbHostName = getDBHostText();
+			setDBUserName(getDBUserText());
+			try {
+				setDBPassword(AESEncrypt.encrypt(getDBPassText()));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			setDBWorldName(getDBNameText());
+			setDBHostName(getDBHostText());
 			writeConfigFile();
+			settingsFrame.dispatchEvent(new WindowEvent(settingsFrame, WindowEvent.WINDOW_CLOSING));
 		}
 	}
 	
@@ -184,7 +195,11 @@ public class SettingsPanel extends JPanel implements ActionListener {
 			setDBUserName(scanner.next());
 			setDBUserText(getDBUserName());
 			if (scanner.hasNext()) {
-				setDBPassword(scanner.next());
+				try {
+					setDBPassword(AESEncrypt.decrypt(scanner.next()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				setDBPassText(getDBPassword());
 				if (scanner.hasNext()) {
 					setDBWorldName(scanner.next());
@@ -263,6 +278,10 @@ public class SettingsPanel extends JPanel implements ActionListener {
 	
 	public void setDBHostName(String string) {
 		dbHostName = string;
+	}
+	
+	public void setSettingsFrame(JFrame settingsFrame) {
+		this.settingsFrame = settingsFrame;
 	}
 	
 	private String charArrayToString(char[] chars) {

@@ -31,7 +31,9 @@ import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.db.structures.Item;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemIconFinder;
+import PYDevTools.utilities.ItemToolTip;
 import PYDevTools.utilities.MySQLAccess;
+import PYDevTools.utilities.SpellFinder;
 
 /**
  * @author alfeey44
@@ -47,16 +49,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JButton createItem;
 	private ImageIcon createItemImage = createImageIcon("../../icons/blacksmithing.png");
 	private ImageDrawingComponent itemIcon, itemToolTip;
-	private String[] toolTipLabels = { "Item Name", "Item Level", "Binds On", "Unique", "Equip", "subclass", 
-										"Damage", "Delay", "DPS", "Stats", "Duribility", "Spell Equips",
-										"Required Level", "Sell Price" };
-	private JLabel TTname, TTdesc, TTilvl, TTbinds, TTunique, TTequip, TTsubclass, TTmindamage, TTmaxdamage, TTdelay,
-				   TTDPS, TTsocket1, TTsocket2, TTsocket3, TTsocketbonus, TTduribility, TTreqclass, TTreqrace, TTspell1, 
-				   TTspell2, TTspell3, TTspell4, TTspell5, TTreqlvl, TTset, TTsellprice;
-	private JLabel[] TTstats = new JLabel[10];
-	private int numTTLabels = toolTipLabels.length;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ",
-								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage", "Armor: ", 
+								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Armor: ", 
 								"Block: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
 								"Stats: ", "Resists: ", "Spells: ", "Sockets: " };
 	private int numLabels = labels.length;
@@ -74,12 +68,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
 	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
-	private JLabel[] TTresists = new JLabel[6];
 	private JList<String> selectedResists;
 	private JLabel invalidDisplayId;
 	private Font italicFont = new Font("Arial", Font.ITALIC, 14);
+	SpringLayout rightLayout;
 	
-	private ItemIconFinder iconFinder = new ItemIconFinder();
+	private ItemIconFinder iconFinder = ItemIconFinder.getInstance();
+	private SpellFinder spellFinder = SpellFinder.getInstance();
 	private Item item = new Item();
 	private MySQLAccess db = new MySQLAccess();
 	
@@ -239,7 +234,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		SpringUtilities.makeCompactGrid(leftPanel, numLabels, 2, 5, 5, 20, 10);
 		
 		// Right Panel
-		SpringLayout rightLayout = new SpringLayout();
+		rightLayout = new SpringLayout();
 		rightPanel = new JPanel(rightLayout);
 		rightPane = new JScrollPane(rightPanel);
 		// Item Icon
@@ -255,129 +250,15 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		rightPanel.add(itemIcon);
 		// Item ToolTip
 		try {
-			itemToolTip = new ImageDrawingComponent(new File("src/icons/tooltip.png").toURI().toURL());
+			itemToolTip = new ItemToolTip(item);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		itemToolTip.resize(550, 550);
 		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
 		toolTipCons.setX(Spring.constant(210));
 		toolTipCons.setY(Spring.constant(60));
+		itemToolTip.setVisible(false);
 		rightPanel.add(itemToolTip);
-		
-		TTname = new JLabel("", JLabel.TRAILING);
-		TTname.setForeground(Color.WHITE);
-		TTname.setLocation(10, 30);
-		itemToolTip.add(TTname);
-		TTdesc = new JLabel("", JLabel.TRAILING);
-		TTdesc.setForeground(Color.WHITE);
-		TTdesc.setLocation(10, 0);
-		itemToolTip.add(TTdesc);
-		TTilvl = new JLabel("", JLabel.TRAILING);
-		TTilvl.setForeground(Color.YELLOW);
-		TTilvl.setLocation(10, 60);
-		itemToolTip.add(TTilvl);
-		TTbinds = new JLabel("", JLabel.TRAILING);
-		TTbinds.setForeground(Color.WHITE);
-		TTbinds.setLocation(10, 90);
-		itemToolTip.add(TTbinds);
-		TTunique = new JLabel("", JLabel.TRAILING);
-		TTunique.setForeground(Color.WHITE);
-		TTunique.setLocation(10, 120);
-		itemToolTip.add(TTunique);
-		TTequip = new JLabel("", JLabel.TRAILING);
-		TTequip.setForeground(Color.WHITE);
-		TTequip.setLocation(10, 150);
-		itemToolTip.add(TTequip);
-		TTsubclass = new JLabel("", JLabel.TRAILING);
-		TTsubclass.setForeground(Color.WHITE);
-		TTsubclass.setLocation(10, 150);
-		itemToolTip.add(TTsubclass);
-		TTmindamage = new JLabel("", JLabel.TRAILING);
-		TTmindamage.setForeground(Color.WHITE);
-		TTmindamage.setLocation(10, 180);
-		itemToolTip.add(TTmindamage);
-		TTmaxdamage = new JLabel("", JLabel.TRAILING);
-		TTdelay = new JLabel("", JLabel.TRAILING);
-		TTdelay.setForeground(Color.WHITE);
-		TTdelay.setLocation(410, 180);
-		itemToolTip.add(TTdelay);
-		TTDPS = new JLabel("", JLabel.TRAILING);
-		TTDPS.setForeground(Color.WHITE);
-		TTDPS.setLocation(10, 210);
-		itemToolTip.add(TTDPS);
-		for (int i = 0; i < 10; i++) {
-			TTstats[i] = new JLabel("", JLabel.TRAILING);
-			TTstats[i].setForeground(Color.WHITE);
-			TTstats[i].setLocation(10, 0);
-			itemToolTip.add(TTstats[i]);
-		}
-		for (int i = 0; i < 6; i++) {
-			TTresists[i] = new JLabel("", JLabel.TRAILING);
-			TTresists[i].setForeground(Color.WHITE);
-			TTresists[i].setLocation(10, 0);
-			itemToolTip.add(TTresists[i]);
-		}
-		TTsocket1 = new JLabel("", JLabel.TRAILING);
-		TTsocket1.setForeground(Color.WHITE);
-		TTsocket1.setLocation(10, 0);
-		itemToolTip.add(TTsocket1);
-		TTsocket2 = new JLabel("", JLabel.TRAILING);
-		TTsocket2.setForeground(Color.WHITE);
-		TTsocket2.setLocation(10, 0);
-		itemToolTip.add(TTsocket2);
-		TTsocket3 = new JLabel("", JLabel.TRAILING);
-		TTsocket3.setForeground(Color.WHITE);
-		TTsocket3.setLocation(10, 0);
-		itemToolTip.add(TTsocket3);
-		TTsocketbonus = new JLabel("", JLabel.TRAILING);
-		TTsocketbonus.setForeground(Color.WHITE);
-		TTsocketbonus.setLocation(10, 0);
-		itemToolTip.add(TTsocketbonus);
-		TTduribility = new JLabel("", JLabel.TRAILING);
-		TTduribility.setForeground(Color.WHITE);
-		TTduribility.setLocation(10, 0);
-		itemToolTip.add(TTduribility);
-		TTreqclass = new JLabel("", JLabel.TRAILING);
-		TTreqclass.setForeground(Color.WHITE);
-		TTreqclass.setLocation(10, 0);
-		itemToolTip.add(TTreqclass);
-		TTreqrace = new JLabel("", JLabel.TRAILING);
-		TTreqrace.setForeground(Color.WHITE);
-		TTreqrace.setLocation(10, 0);
-		itemToolTip.add(TTreqrace);
-		TTspell1 = new JLabel("", JLabel.TRAILING);
-		TTspell1.setForeground(Color.WHITE);
-		TTspell1.setLocation(10, 0);
-		itemToolTip.add(TTspell1);
-		TTspell2 = new JLabel("", JLabel.TRAILING);
-		TTspell2.setForeground(Color.WHITE);
-		TTspell2.setLocation(10, 0);
-		itemToolTip.add(TTspell2);
-		TTspell3 = new JLabel("", JLabel.TRAILING);
-		TTspell3.setForeground(Color.WHITE);
-		TTspell3.setLocation(10, 0);
-		itemToolTip.add(TTspell3);
-		TTspell4 = new JLabel("", JLabel.TRAILING);
-		TTspell4.setForeground(Color.WHITE);
-		TTspell4.setLocation(10, 0);
-		itemToolTip.add(TTspell4);
-		TTspell5 = new JLabel("", JLabel.TRAILING);
-		TTspell5.setForeground(Color.WHITE);
-		TTspell5.setLocation(10, 0);
-		itemToolTip.add(TTspell5);
-		TTreqlvl = new JLabel("", JLabel.TRAILING);
-		TTreqlvl.setForeground(Color.WHITE);
-		TTreqlvl.setLocation(10, 0);
-		itemToolTip.add(TTreqlvl);
-		TTset = new JLabel("", JLabel.TRAILING);
-		TTset.setForeground(Color.WHITE);
-		TTset.setLocation(10, 0);
-		itemToolTip.add(TTset);
-		TTsellprice = new JLabel("", JLabel.TRAILING);
-		TTsellprice.setForeground(Color.WHITE);
-		TTsellprice.setLocation(10, 0);
-		itemToolTip.add(TTsellprice);
 		
 		invalidDisplayId = new JLabel("Display Id Invalid");
 		invalidDisplayId.setFont(italicFont);
@@ -413,129 +294,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		if (e.getActionCommand().equals(createItem.getActionCommand())) {
 			// Craft button clicked
 			fillItem();
-			/*try {
-				if (item.getEntry() != 0 && !db.isUsedEntry(item.getEntry()))
-					db.insertWeaponIntoTemplate(item);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}*/
-		}
-		if (e.getActionCommand().equals(quality.getActionCommand())) {
-			switch (quality.getSelectedIndex()) {
-			case 0:
-				TTname.setForeground(Color.gray);
-				break;
-			case 1:
-				TTname.setForeground(Color.white);
-				break;
-			case 2:
-				TTname.setForeground(Color.green);
-				break;
-			case 3:
-				TTname.setForeground(Color.blue);
-				break;
-			case 4:
-				TTname.setForeground(Color.magenta);
-				break;
-			case 5:
-				TTname.setForeground(Color.orange);
-				break;
-			case 6:
-				TTname.setForeground(Color.yellow);
-				break;
-			}
-		}
-		
-		if (e.getActionCommand().equals(bind.getActionCommand())) {
-			switch (bind.getSelectedIndex()) {
-			case 0:
-				TTbinds.setText("None");
-				break;
-			case 1:
-				TTbinds.setText("Binds when picked up");
-				break;
-			case 2:
-				TTbinds.setText("Binds when equipped");
-				break;
-			case 3:
-				TTbinds.setText("Binds when used");
-				break;
-			}
-		}
-		
-		if (e.getActionCommand().equals(equip.getActionCommand())) {
-			switch (equip.getSelectedIndex()) {
-			case 0:
-				TTequip.setText("One-Hand");
-				break;
-			case 1:
-				TTequip.setText("Main-Hand");
-				break;
-			case 2:
-				TTequip.setText("Off-Hand");
-				break;
-			case 3:
-				TTequip.setText("Two-Handed");
-				break;
-			case 4:
-			case 5:
-			case 7:
-			case 8:
-				TTequip.setText("Ranged");
-				break;
-			case 6:
-				TTequip.setText("Thrown");
-				break;
-			}
-		}
-		
-		if (e.getActionCommand().equals(subclass.getActionCommand())) {
-			TTequip.setVisible(false);
-			switch (subclass.getSelectedIndex()) {
-			case 0:
-			case 1:
-				TTsubclass.setText("Axe");
-				break;
-			case 2:
-				TTsubclass.setText("Bow");
-				break;
-			case 3:
-				TTsubclass.setText("Gun");
-				break;
-			case 4:
-			case 5:
-				TTsubclass.setText("Mace");
-				break;
-			case 6:
-				TTsubclass.setText("Polearm");
-				break;
-			case 7:
-			case 8:
-				TTsubclass.setText("Sword");
-				break;
-			case 9:
-				TTsubclass.setText("Staff");
-				break;
-			case 10:
-				TTsubclass.setText("Fist");
-				break;
-			case 11:
-				TTsubclass.setText("Dagger");
-				break;
-			case 12:
-				TTsubclass.setText("Throwing");
-				break;
-			case 13:
-				TTsubclass.setText("Spear");
-				break;
-			case 14:
-				TTsubclass.setText("Crossbow");
-				break;
-			case 15:
-				TTsubclass.setText("Wand");
-				break;
-			}
-			TTsubclass.setLocation(((itemToolTip.getWidth()-30)-(TTsubclass.getText().length()*10)), 150);
 		}
 	}
 	
@@ -552,11 +310,15 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 
     /** Fills item class with fields from panel **/
     private void fillItem() {
+    	// Crafting a weapon
+    	item.setClass_(2);
+    	
+    	////////////////////////
     	
     	if (!display.getText().isEmpty()) {
 			String iconPath = "";
 			if (!display.getText().isEmpty()) {
-				// Do it here incase id exists but just no icon available
+				// Do it here in case id exists but just no icon available
 				item.setDisplay(Integer.parseInt(display.getText()));
 				int displayIdText = 0;
 				try {
@@ -567,7 +329,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
 				}
 				iconPath = iconFinder.findIconByDisplayId(displayIdText);
-				if (!iconPath.isEmpty()) {
+				if (iconPath != null && !iconPath.isEmpty()) {
 					invalidDisplayId.setVisible(false);
 					itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
 					System.out.println("Display Value: " + display.getText());
@@ -583,68 +345,42 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	
 		if (!name.getText().isEmpty()) {
 			item.setName(name.getText());
-			TTname.setText(name.getText());
 		}
 		
 		if (!desc.getText().isEmpty()) {
 			item.setDescription(desc.getText());
-			TTdesc.setText(desc.getText());
 		}
 		
 		if (!delay.getText().isEmpty()) {
 			item.setDelay(Integer.parseInt(delay.getText()));
-			TTmindamage.setVisible(false);
-			float delayInSecs = Float.parseFloat(delay.getText());
-			TTdelay.setText("Speed " + String.format("%.2g%n", delayInSecs/1000.00f) + "0");
 		}
 		
 		if (!mindamage.getText().isEmpty()) {
-			//item.setMinDamage(Integer.parseInt(minDamage.getText()));
-			TTmindamage.setText(mindamage.getText());
+			item.setMinDamage(Integer.parseInt(mindamage.getText()));
 		}
 		
 		if (!maxdamage.getText().isEmpty()) {
-			//item.setMaxDamage(Integer.parseInt(minDamage.getText()));
-			TTmindamage.setText(mindamage.getText() + " - " + maxdamage.getText() + " Damage");
+			item.setMaxDamage(Integer.parseInt(maxdamage.getText()));
 		}
 		
 		if (!armor.getText().isEmpty()) {
 			item.setArmor(Integer.parseInt(armor.getText()));
-			//TTarmor.setText(armor.getText());
 		}
 		
 		if (!block.getText().isEmpty()) {
 			item.setBlock(Integer.parseInt(block.getText()));
-			//TTblock.setText(block.getText());
 		}
 		
 		if (!reqlvl.getText().isEmpty()) {
 			item.setReqlvl(Integer.parseInt(reqlvl.getText()));
-			TTreqlvl.setText(reqlvl.getText());
 		}
 		
 		if (!ilvl.getText().isEmpty()) {
 			item.setIlvl(Integer.parseInt(ilvl.getText()));
-			TTilvl.setText("Item Level " + ilvl.getText());
 		}
 		
 		if (!unique.getText().isEmpty()) {
 			item.setUnique(Integer.parseInt(unique.getText()));
-			int uniqueNum = 0;
-			try {
-				uniqueNum = Integer.parseInt(unique.getText());
-				
-				if (uniqueNum == 1)
-					TTunique.setText("Unique");
-				else if (uniqueNum == 0)
-					TTunique.setText("");
-				else
-					TTunique.setText("Unique-" + unique.getText());
-			} catch (NumberFormatException ex) {
-				// TODO
-				// Print Error Message
-				ex.printStackTrace();
-			}
 		}
 		
     	item.setQuality(quality.getSelectedIndex());
@@ -690,67 +426,67 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	switch(subclass.getSelectedIndex()) {
     	case 0:
     		// 1H axe
-    		item.setsubclass(0);
+    		item.setSubclass(0);
     		break;
     	case 1:
     		// 2H axe
-    		item.setsubclass(1);
+    		item.setSubclass(1);
     		break;
     	case 2:
     		// Bow
-    		item.setsubclass(2);
+    		item.setSubclass(2);
     		break;
     	case 3:
     		// Gun
-    		item.setsubclass(3);
+    		item.setSubclass(3);
     		break;
     	case 4:
     		// 1H mace
-    		item.setsubclass(4);
+    		item.setSubclass(4);
     		break;
     	case 5:
     		// 2H mace
-    		item.setsubclass(5);
+    		item.setSubclass(5);
     		break;
     	case 6:
     		// Polearm
-    		item.setsubclass(6);
+    		item.setSubclass(6);
     		break;
     	case 7:
     		// 1H sword
-    		item.setsubclass(7);
+    		item.setSubclass(7);
     		break;
     	case 8:
     		// 2H sword
-    		item.setsubclass(8);
+    		item.setSubclass(8);
     		break;
     	case 9:
     		// Staff
-    		item.setsubclass(10);
+    		item.setSubclass(10);
     		break;
     	case 10:
     		// Fist
-    		item.setsubclass(13);
+    		item.setSubclass(13);
     		break;
     	case 11:
     		// Dagger
-    		item.setsubclass(15);
+    		item.setSubclass(15);
     		break;
     	case 12:
     		// Thrown
-    		item.setsubclass(16);
+    		item.setSubclass(16);
     		break;
     	case 13:
     		// Spear
-    		item.setsubclass(17);
+    		item.setSubclass(17);
     		break;
     	case 14:
     		// Crossbow
-    		item.setsubclass(18);
+    		item.setSubclass(18);
     		break;
     	case 15:
     		// Wand
-    		item.setsubclass(19);
+    		item.setSubclass(19);
     		break;
     	}
     	
@@ -785,8 +521,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	if (statsToCalc.length > 10) {
     		// print error message, can only have 10 stats
     	}
-    	
-    	int currentTTPrintLocation = 0;
     	
     	for (int i = 0; i < statsToCalc.length && i < 10; i++) {
     		String statText = "";
@@ -894,7 +628,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		
     		float subclassMultiplier = 1;
     		
-    		switch (item.getsubclass()) {
+    		switch (item.getSubclass()) {
     		// One handers
     		case 0:
     		case 4:
@@ -928,18 +662,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		// Do calculation for value based off of quality and ilvl and subclass
     		float statValue = serverMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/4;
     		item.setStat_value(i, (int)statValue);
-    		if (item.getStat_value(i) != 0) {
-    			if (isEquipStat) {
-    				TTstats[i].setForeground(Color.GREEN);
-    				TTstats[i].setText(statText + item.getStat_value(i) + ".");
-    			} else {
-    				TTstats[i].setForeground(Color.WHITE);
-    				TTstats[i].setText("+" + item.getStat_value(i) + statText);
-    			}
-    			
-    			TTstats[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
-    		}
     	}
     	
     	// resists
@@ -956,7 +678,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		float statMultiplier = 1;
     		float subclassMultiplier = 1;
     		
-    		switch (item.getsubclass()) {
+    		switch (item.getSubclass()) {
     		// One handers
     		case 0:
     		case 4:
@@ -995,55 +717,31 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases fire resist by ";
     			item.setFire_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getFire_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
     			break;
     		case 1: //frost
     			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases frost resist by ";
     			item.setFrost_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getFrost_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
     			break;
     		case 2: //shadow
     			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases shadow resist by ";
     			item.setShadow_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getShadow_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
     			break;
 			case 3: //holy
 				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases holy resist by ";
     			item.setHoly_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getHoly_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
 			    break;
 			case 4: //nature
 				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases nature resist by ";
     			item.setNature_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getNature_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
 				break;
 			case 5: //arcane
 				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
     			resistText = "Equip: Increases nature resist by ";
     			item.setArcane_resist((int)resistValue);
-    			TTresists[i].setForeground(Color.GREEN);
-    			TTresists[i].setText(resistText + item.getArcane_resist() + ".");
-    			TTresists[i].setLocation(10, 240+(currentTTPrintLocation*30));
-    			currentTTPrintLocation++;
 				break;
 			default: //nothing
     			// No resists should be added to item
@@ -1053,11 +751,29 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	}
     	   	
     	// Spells
-    	
+    	if (!spell.getText().isEmpty()) {
+    		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell.getText()));
+    		System.out.println("Spell Description: " + spellDesc);
+    		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell.getText()));
+    		System.out.println("Spell Icon: " + spellIcon);
+    		item.setSpell_id(0, Integer.parseInt(spell.getText()));
+    	}
     	
     	// Sockets
     	
     	//repaint
-    	itemToolTip.repaint();
+    	rightPanel.remove(itemToolTip);
+    	try {
+			itemToolTip = new ItemToolTip(item);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
+		toolTipCons.setX(Spring.constant(210));
+		toolTipCons.setY(Spring.constant(60));
+		rightPanel.add(itemToolTip);
+		
+		rightPanel.repaint();
+		rightPanel.revalidate();
     }
 }

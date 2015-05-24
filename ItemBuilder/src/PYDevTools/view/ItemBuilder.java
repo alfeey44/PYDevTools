@@ -31,13 +31,14 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	ArmorPanel armorPanel;
 	MiscPanel miscPanel;
 	DbPanel dbPanel;
-	static SettingsPanel settingsPanel;
-	ImageIcon weaponTabIcon, armorTabIcon, miscTabIcon;
+	static SettingsPanel settingsPanel = SettingsPanel.getInstance();
+	ImageIcon weaponTabIcon, armorTabIcon, miscTabIcon, dbTabIcon;
 	JMenuBar menuBar;
 	JMenu menu;
 	JMenuItem menuItem1;
 	
 	private ItemBuilder() {
+		
 		// Build menu
 		menuBar = new JMenuBar();
 		menu = new JMenu("Menu");
@@ -68,6 +69,11 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		miscTabIcon = new ImageIcon("src/icons/WoWIcons/INV_Inscription_RunescrollOfFortitude_Blue.png");
 		tabbedPane.addTab("Misc", miscTabIcon, miscPanel, "Build Misc Items");
 		tabbedPane.setMnemonicAt(2, KeyEvent.VK_M);
+		// DB Tab
+		dbPanel = new DbPanel();
+		dbTabIcon = new ImageIcon("src/icons/dbicon.jpg");
+		tabbedPane.addTab("Database", dbTabIcon, dbPanel, "Search for Items in the Database");
+		tabbedPane.setMnemonicAt(3, KeyEvent.VK_D);
 		
 		this.add(tabbedPane);
 	}
@@ -92,13 +98,14 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		
 		// Settings Frame
 		settingsFrame = new JFrame();
-		settingsFrame.add(SettingsPanel.getInstance());
+		settingsFrame.add(settingsPanel);
 		settingsFrame.setTitle("PY Settings");
 		settingsFrame.setSize(600, 400);
 		settingsFrame.setLocation(600, 300);
 		settingsFrame.setResizable(false);
 		settingsFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		settingsFrame.setVisible(false);
+		settingsPanel.setSettingsFrame(settingsFrame);
 	}
 
 	@Override
