@@ -1,0 +1,33 @@
+package PYDevTools.enums;
+
+public enum ItemInventoryType {
+	non_equipable,
+	head,
+	neck,
+	shoulder,
+	shirt,
+	chest,
+	waist,
+	legs,
+	feet,
+	wrists,
+	hands,
+	finger,
+	trinket,
+	weapon,
+	shield,
+	bow,
+	back,
+	two_hand,
+	bag,
+	tabard,
+	robe,
+	main_hand,
+	off_hand,
+	tome,
+	ammo,
+	thrown,
+	wand_and_gun,
+	quiver,
+	relic
+}

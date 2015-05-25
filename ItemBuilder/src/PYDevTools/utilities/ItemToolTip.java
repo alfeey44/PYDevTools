@@ -617,4 +617,8 @@ public class ItemToolTip extends ImageDrawingComponent {
 		
 		return stringArray;
 	}
+	
+	public int getToolTipHeight() {
+		return toolTipHeight;
+	}
 }

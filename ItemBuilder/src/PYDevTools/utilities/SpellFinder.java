@@ -40,6 +40,7 @@ public class SpellFinder {
 				processFileForSpellIcons();
 				processFileForSpellIconIds();
 				processFileForSpellDescriptions();
+				System.out.println("Done loading files.");
 			}
 		});
 
@@ -99,13 +100,13 @@ public class SpellFinder {
 				// Id was not successfully grabbed
 				return;
 			}
-			System.out.println("id = " + id);
+			//System.out.println("id = " + id);
 			for (int i = 0; i < 4; i++) {
-				System.out.println(scanner.next());
+				scanner.next();
 			}
 			if (scanner.hasNext()) {
 				desc = scanner.next();
-				System.out.println("desc = " + desc);
+				//System.out.println("desc = " + desc);
 				if (!id.isEmpty() && !desc.isEmpty()) {
 					spellDescriptions.put(Integer.parseInt(id), desc);
 				}

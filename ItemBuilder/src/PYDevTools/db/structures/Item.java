@@ -1,5 +1,8 @@
 package PYDevTools.db.structures;
 
+import PYDevTools.enums.ItemBonding;
+import PYDevTools.enums.ItemType;
+
 public class Item {
 	private String name, description;
 	private int entry, class_, display, quality, inventoryType, subclass, sheath, binds, delay,
@@ -333,4 +336,18 @@ public class Item {
 	public void setDuribility(int duribility) {
 		this.duribility = duribility;
 	}
+	
+	public ItemType getItemType() {
+		switch(class_) {
+		case 0:
+			return ItemType.empty;
+		case 2:
+			return ItemType.weapon;
+		case 4:
+			return ItemType.armor;
+		default:
+			return ItemType.misc;
+		}
+	}
+	
 }
