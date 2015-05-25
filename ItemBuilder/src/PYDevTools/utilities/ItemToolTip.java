@@ -13,6 +13,7 @@ import PYDevTools.db.structures.Item;
 @SuppressWarnings("serial")
 public class ItemToolTip extends ImageDrawingComponent {
 	private Item item;
+	private String iconPath;
 	private String[] toolTipLabels = { "Item Name", "Item Level", "Binds On", "Unique", "Equip", "subclass", 
 			"Damage", "Delay", "DPS", "Stats", "Duribility", "Spell Equips",
 			"Required Level", "Sell Price" };
@@ -32,6 +33,8 @@ public class ItemToolTip extends ImageDrawingComponent {
 	public ItemToolTip(Item item) throws MalformedURLException {
 		super(new File("src/icons/tooltip.png").toURI().toURL());
 		this.item = item;
+		
+		iconPath = ItemIconFinder.getInstance().findIconByDisplayId(item.getDisplay());
 		
 		TTname = new JLabel("", JLabel.TRAILING);
 		TTname.setForeground(Color.WHITE);
@@ -603,7 +606,7 @@ public class ItemToolTip extends ImageDrawingComponent {
 				if (pos == length) {
 					pos = 3;
 					findLastWord = tempString.substring(0, length-pos) + " - ";
-					System.out.println("That is a really big word aosdf asdfasdf;lkajsdfl;kjad;lfkfja;dljkad;lfjka;sdljkffa;lksdjf;aljksdf");
+					System.out.println("That is a really big word: " + findLastWord);
 					continue;
 				}
 				findLastWord = findLastWord.substring(0, length-pos);
@@ -621,4 +624,10 @@ public class ItemToolTip extends ImageDrawingComponent {
 	public int getToolTipHeight() {
 		return toolTipHeight;
 	}
+	
+	public String getIconPath() {
+		return iconPath;
+	}
+	
+	
 }

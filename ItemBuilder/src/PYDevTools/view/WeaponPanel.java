@@ -29,6 +29,7 @@ import javax.swing.SpringLayout;
 
 import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.db.structures.Item;
+import PYDevTools.enums.ItemInventoryType;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemIconFinder;
 import PYDevTools.utilities.ItemToolTip;

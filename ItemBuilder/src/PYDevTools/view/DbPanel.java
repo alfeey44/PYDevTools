@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import javax.swing.table.TableColumn;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 import PYDevTools.db.structures.Item;
+import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemToolTip;
 import PYDevTools.utilities.MySQLAccess;
 import PYDevTools.enums.ItemType;
@@ -43,6 +45,7 @@ public class DbPanel extends JPanel implements ActionListener {
 	private JPanel leftPanel, rightPanel;
 	private HashMap<Item, ItemToolTip> items;
 	private ItemToolTip currentTT;
+	private ImageDrawingComponent currentIcon;
 	private JLabel searchBarLabel, itemNotFoundLabel;
 	private JTextField searchBar;
 	private JButton search;
@@ -136,10 +139,13 @@ public class DbPanel extends JPanel implements ActionListener {
 					   currentTT = entry.getValue();
 					   SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(currentTT);
 					   toolTipCons.setX(Spring.constant(150));
-					   toolTipCons.setY(Spring.constant(75));
+					   toolTipCons.setY(Spring.constant(50));
 					   rightPanel.add(currentTT);
 					   
-					   rightPanel.setPreferredSize(new Dimension(550, currentTT.getToolTipHeight()+150));
+					   rightPanel.setPreferredSize(new Dimension(550, currentTT.getToolTipHeight()+125));
+					   
+					   currentIcon.setImage("src/icons/WoWIcons/" + currentTT.getIconPath() + ".png");
+					   currentIcon.repaint();
 					   
 					   repaint();
 					   revalidate();
@@ -193,12 +199,24 @@ public class DbPanel extends JPanel implements ActionListener {
 		
 		leftPanel.add(tableScrollPane);
 		
+		// Item Icon
+		try {
+			currentIcon = new ImageDrawingComponent(new File("src/icons/Inv_misc_questionmark.png").toURI().toURL());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		currentIcon.resize(80, 80);
+		SpringLayout.Constraints iconCons = rightLayout.getConstraints(currentIcon);
+		iconCons.setX(Spring.constant(50));
+		iconCons.setY(Spring.constant(50));
+		rightPanel.add(currentIcon);
+		
 		Item tempItem = new Item();
 		try {
 			currentTT = new ItemToolTip(tempItem);
 			SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(currentTT);
 			toolTipCons.setX(Spring.constant(150));
-			toolTipCons.setY(Spring.constant(75));
+			toolTipCons.setY(Spring.constant(50));
 		   
 			rightPanel.add(currentTT);
 			currentTT.setVisible(false);
