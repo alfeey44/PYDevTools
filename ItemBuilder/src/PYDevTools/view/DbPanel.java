@@ -145,6 +145,7 @@ public class DbPanel extends JPanel implements ActionListener {
 					   rightPanel.setPreferredSize(new Dimension(550, currentTT.getToolTipHeight()+125));
 					   
 					   currentIcon.setImage("src/icons/WoWIcons/" + currentTT.getIconPath() + ".png");
+					   currentIcon.resize(80, 80);
 					   currentIcon.repaint();
 					   
 					   repaint();
@@ -177,6 +178,8 @@ public class DbPanel extends JPanel implements ActionListener {
 			        			if (clickedItem.getItemType() == ItemType.weapon) {
 			        				// send to weapon tab
 			        				System.out.println("Send Weapon to Weapon Tab");
+			        				WeaponPanel.getInstance().setCurrentWeapon(clickedItem);
+			        				ItemBuilder.getInstance().goToWeaponTab();
 			        			}
 			        			// 
 			        		} else {

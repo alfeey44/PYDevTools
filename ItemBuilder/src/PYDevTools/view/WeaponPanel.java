@@ -42,6 +42,7 @@ import PYDevTools.utilities.SpellFinder;
  */
 public class WeaponPanel extends JPanel implements FocusListener, ActionListener {
 	
+	private static WeaponPanel instance = null;
 	// Panels
 	private JSplitPane mainPane;
 	private JScrollPane leftPane, rightPane;
@@ -64,7 +65,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JList<String> selectedStats;
 	private String[] stats = { "Stamina", "Strength", "Agility", "Intellect", "Spirit", "Spell Power", "Attack Power",
 								"Hit Rating", "Crit Rating", "Haste Rating", "Armor Penetration", "Spell Penetration", 
-								"Expertise", "Defense", "Dodge", "Parry", "Resilience", };
+								"Expertise", "Defense", "Dodge", "Parry", "Block", "Resilience", };
 	private String[] qualities = { "Gray", "White", "Green", "Blue", "Purple", "Orange", "Heirloom" };
 	private String[] equips = { "One Handed", "Main Handed", "Off Handed", "Two Handed", "Bow", "Gun", "Thrown", "CrossBow", "Wand" };
 	private String[] subclasses = { "1H Axe", "2H Axe", "Bow", "Gun", "1H Mace", "2H Mace", "Polearm", "1H Sword", "2H Sword",
@@ -85,6 +86,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private MySQLAccess db = new MySQLAccess();
 	
 	private float serverMultiplier;
+	
+	public static WeaponPanel getInstance() {
+		if (instance == null) {
+			instance = new WeaponPanel();
+		}
+		return instance;
+	}
 	
 	public WeaponPanel() {
 		super(new SpringLayout());
@@ -351,32 +359,30 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	
     	////////////////////////
     	
-    	if (!display.getText().isEmpty()) {
+		if (!display.getText().isEmpty()) {
 			String iconPath = "";
-			if (!display.getText().isEmpty()) {
-				// Do it here in case id exists but just no icon available
-				item.setDisplay(Integer.parseInt(display.getText()));
-				int displayIdText = 0;
-				try {
-					displayIdText = Integer.parseInt(display.getText());
-				} catch (NumberFormatException ex) {
-					// Display Id invalid
-					invalidDisplayId.setVisible(true);
-					itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
-				}
-				iconPath = iconFinder.findIconByDisplayId(displayIdText);
-				if (iconPath != null && !iconPath.isEmpty()) {
-					invalidDisplayId.setVisible(false);
-					itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
-					System.out.println("Display Value: " + display.getText());
-					itemIcon.repaint();
-				} else {
-					// Display Id invalid
-					invalidDisplayId.setVisible(true);
-					itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
-				}
+			// Do it here in case id exists but just no icon available
+			item.setDisplay(Integer.parseInt(display.getText()));
+			int displayIdText = 0;
+			try {
+				displayIdText = Integer.parseInt(display.getText());
+			} catch (NumberFormatException ex) {
+				// Display Id invalid
+				invalidDisplayId.setVisible(true);
+				itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
 			}
-			
+			iconPath = iconFinder.findIconByDisplayId(displayIdText);
+			if (iconPath != null && !iconPath.isEmpty()) {
+				invalidDisplayId.setVisible(false);
+				itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
+				itemIcon.resize(80, 80);
+				System.out.println("Display Value: " + display.getText());
+				itemIcon.repaint();
+			} else {
+				// Display Id invalid
+				invalidDisplayId.setVisible(true);
+				itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
+			}
 		}
     	
 		if (!name.getText().isEmpty()) {
@@ -836,6 +842,255 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	// Sockets
     	
     	//repaint
+    	rightPanel.remove(itemToolTip);
+    	try {
+			itemToolTip = new ItemToolTip(item);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(itemToolTip);
+		toolTipCons.setX(Spring.constant(210));
+		toolTipCons.setY(Spring.constant(60));
+		rightPanel.add(itemToolTip);
+		
+		rightPanel.repaint();
+		rightPanel.revalidate();
+    }
+    
+    public void setCurrentWeapon(Item item) {
+    	this.item = item;
+    	if (item != null)
+    		fillCurrentWeaponFields();
+    }
+    
+    public void fillCurrentWeaponFields() {
+    	name.setText(item.getName());
+    	desc.setText(item.getDescription());
+    	display.setText(Integer.toString(item.getDisplay()));
+    	quality.setSelectedIndex(item.getQuality());
+    	
+    	switch (item.getInventoryType()) {
+    	case 13:
+    		equip.setSelectedIndex(0);
+    		break;
+    	case 21:
+    		equip.setSelectedIndex(1);
+    		break;
+    	case 22:
+    		equip.setSelectedIndex(2);
+    		break;
+    	case 17:
+    		equip.setSelectedIndex(3);
+    		break;
+    	case 15:
+    		equip.setSelectedIndex(4);
+    		break;
+    	case 26:
+    		if (item.getSubclass() == 3)
+    			equip.setSelectedIndex(5);
+    		else if (item.getSubclass() == 18)
+    			equip.setSelectedIndex(7);
+    		else if (item.getSubclass() == 19)
+    			equip.setSelectedIndex(8);
+    		break;
+    	case 25:
+    		equip.setSelectedIndex(6);
+    		break;
+    	default:
+    		System.err.println("Unknown item equip");
+    		break;
+    	}
+    	
+    	switch(item.getSubclass()) {
+    	case 0:
+    		subclass.setSelectedIndex(0);
+    		break;
+    	case 1:
+    		subclass.setSelectedIndex(1);
+    		break;
+    	case 2:
+    		subclass.setSelectedIndex(2);
+    		break;
+    	case 3:
+    		subclass.setSelectedIndex(3);
+    		break;
+    	case 4:
+    		subclass.setSelectedIndex(4);
+    		break;
+    	case 5:
+    		subclass.setSelectedIndex(5);
+    		break;
+    	case 6:
+    		subclass.setSelectedIndex(6);
+    		break;
+    	case 7:
+    		subclass.setSelectedIndex(7);
+    		break;
+    	case 8:
+    		subclass.setSelectedIndex(8);
+    		break;
+    	case 10:
+    		subclass.setSelectedIndex(9);
+    		break;
+    	case 13:
+    		subclass.setSelectedIndex(10);
+    		break;
+    	case 15:
+    		subclass.setSelectedIndex(11);
+    		break;
+    	case 16:
+    		subclass.setSelectedIndex(12);
+    		break;
+    	case 17:
+    		subclass.setSelectedIndex(13);
+    		break;
+    	case 18:
+    		subclass.setSelectedIndex(14);
+    		break;
+    	case 19:
+    		subclass.setSelectedIndex(15);
+    		break;
+    	default:
+    		System.err.println("Unknown Item Subclass");
+    		break;
+    	}
+    	
+    	switch(item.getSheath()) {
+    	case 1:
+    		sheath.setSelectedIndex(1);
+    		break;
+    	case 2:
+    		sheath.setSelectedIndex(2);
+    		break;
+    	case 3:
+    		sheath.setSelectedIndex(0);
+    		break;
+    	case 4:
+    		sheath.setSelectedIndex(3);
+    		break;
+    	case 6:
+    		sheath.setSelectedIndex(4);
+    		break;
+    	default:
+    		System.err.println("Unknown Item Sheath");
+    		break;
+    	}
+    	
+    	bind.setSelectedIndex(item.getBinds());
+    	if (item.getDelay() != 0)
+    		delay.setText(Integer.toString(item.getDelay()));
+    	if (item.getMinDamage() != 0)
+    		mindamage.setText(Integer.toString(item.getMinDamage()));
+    	if (item.getMaxDamage() != 0)
+    		maxdamage.setText(Integer.toString(item.getMaxDamage()));
+    	if (item.getArmor() != 0)
+    		armor.setText(Integer.toString(item.getArmor()));
+    	if (item.getBlock() != 0)
+    		block.setText(Integer.toString(item.getBlock()));
+    	if (item.getReqlvl() != 0)
+    		reqlvl.setText(Integer.toString(item.getReqlvl()));
+    	if (item.getIlvl() != 0)
+    		ilvl.setText(Integer.toString(item.getIlvl()));
+    	if (item.getUnique() != 0)
+    		unique.setText(Integer.toString(item.getUnique()));
+    	
+    	int[] selectedStatIndices = new int[10];
+    	for (int i = 0; i < 10; i++) {
+    		if (item.getStat_value(i) != 0) {
+    			switch(item.getStat_type(i)) {
+    			case 3:
+    				selectedStatIndices[i] = 2;
+    				break;
+    			case 4:
+    				selectedStatIndices[i] = 1;
+    				break;
+    			case 5:
+    				selectedStatIndices[i] = 3;
+    				break;
+    			case 6:
+    				selectedStatIndices[i] = 4;
+    				break;
+    			case 7:
+    				selectedStatIndices[i] = 0;
+    				break;
+    			case 12:
+    				selectedStatIndices[i] = 13;
+    				break;
+    			case 13:
+    				selectedStatIndices[i] = 14;
+    				break;
+    			case 14:
+    				selectedStatIndices[i] = 15;
+    				break;
+    			case 15:
+    				selectedStatIndices[i] = 16;
+    				break;
+    			case 31:
+    				selectedStatIndices[i] = 7;
+    				break;
+    			case 32:
+    				selectedStatIndices[i] = 8;
+    				break;
+    			case 35:
+    				selectedStatIndices[i] = 17;
+    				break;
+    			case 36:
+    				selectedStatIndices[i] = 9;
+    				break;
+    			case 37:
+    				selectedStatIndices[i] = 12;
+    				break;
+    			case 38:
+    				selectedStatIndices[i] = 6;
+    				break;
+    			case 44:
+    				selectedStatIndices[i] = 10;
+    				break;
+    			case 45:
+    				selectedStatIndices[i] = 5;
+    				break;
+    			case 47:
+    				selectedStatIndices[i] = 11;
+    				break;
+    			default:
+    				selectedStatIndices[i] = 0;
+    				System.err.println("Stat that could not be selected was loaded to weapon panel.");
+    				// show error
+    				break;
+    			}
+    		} else
+    			selectedStatIndices[i] = 0;
+    	}
+    	selectedStats.setSelectedIndices(selectedStatIndices);
+    	
+    	// Repaint Icon
+    	if (!display.getText().isEmpty()) {
+			String iconPath = "";
+			// Do it here in case id exists but just no icon available
+			item.setDisplay(Integer.parseInt(display.getText()));
+			int displayIdText = 0;
+			try {
+				displayIdText = Integer.parseInt(display.getText());
+			} catch (NumberFormatException ex) {
+				// Display Id invalid
+				invalidDisplayId.setVisible(true);
+				itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
+			}
+			iconPath = iconFinder.findIconByDisplayId(displayIdText);
+			if (iconPath != null && !iconPath.isEmpty()) {
+				invalidDisplayId.setVisible(false);
+				itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
+				itemIcon.resize(80, 80);
+				System.out.println("Display Value: " + display.getText());
+				itemIcon.repaint();
+			} else {
+				// Display Id invalid
+				invalidDisplayId.setVisible(true);
+				itemIcon.setImage("src/icons/Inv_misc_questionmark.png");
+			}
+		}
+    	
+    	//Repaint ToolTip
     	rightPanel.remove(itemToolTip);
     	try {
 			itemToolTip = new ItemToolTip(item);

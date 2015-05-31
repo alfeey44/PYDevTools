@@ -25,17 +25,18 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class ItemBuilder extends JFrame implements ActionListener {
 	
-	static JFrame IBFrame, settingsFrame;
-	JTabbedPane tabbedPane;
-	WeaponPanel wepPanel;
-	ArmorPanel armorPanel;
-	MiscPanel miscPanel;
-	DbPanel dbPanel;
-	static SettingsPanel settingsPanel = SettingsPanel.getInstance();
-	ImageIcon weaponTabIcon, armorTabIcon, miscTabIcon, dbTabIcon;
-	JMenuBar menuBar;
-	JMenu menu;
-	JMenuItem menuItem1;
+	private static ItemBuilder instance = null;
+	private static JFrame IBFrame, settingsFrame;
+	private JTabbedPane tabbedPane;
+	private WeaponPanel wepPanel;
+	private ArmorPanel armorPanel;
+	private MiscPanel miscPanel;
+	private DbPanel dbPanel;
+	private static SettingsPanel settingsPanel = SettingsPanel.getInstance();
+	private ImageIcon weaponTabIcon, armorTabIcon, miscTabIcon, dbTabIcon;
+	private JMenuBar menuBar;
+	private JMenu menu;
+	private JMenuItem menuItem1;
 	
 	private ItemBuilder() {
 		
@@ -55,7 +56,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		// Tabbed Pane
 		tabbedPane = new JTabbedPane();
 		// Weapon Tab
-		wepPanel = new WeaponPanel();
+		wepPanel = WeaponPanel.getInstance();
 		weaponTabIcon = new ImageIcon("src/icons/thunderfury-icon.gif");
 		tabbedPane.addTab("Weapon", weaponTabIcon, wepPanel, "Build Weapons");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_W);
@@ -78,6 +79,13 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		this.add(tabbedPane);
 	}
 	
+	public static ItemBuilder getInstance() {
+		if (instance == null) {
+			instance = new ItemBuilder();
+		}
+		return instance;
+	}
+	
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -88,7 +96,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	
 	private static void initializeFrames() {
 		// Main Frame
-		IBFrame = new ItemBuilder();
+		IBFrame = ItemBuilder.getInstance();
 		IBFrame.setTitle("PY ItemBuilder");
 		IBFrame.setSize(1440, 800);
 		IBFrame.setLocation(200, 100);
@@ -114,5 +122,9 @@ public class ItemBuilder extends JFrame implements ActionListener {
 			// Open Settings Frame
 			settingsFrame.setVisible(true);
 		}
+	}
+	
+	public void goToWeaponTab() {
+		tabbedPane.setSelectedIndex(0);
 	}
 }
