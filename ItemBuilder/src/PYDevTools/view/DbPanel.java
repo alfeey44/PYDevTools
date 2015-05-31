@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -39,7 +40,7 @@ import PYDevTools.enums.ItemType;
  * @author alfeey44
  *
  */
-public class DbPanel extends JPanel implements ActionListener {
+public class DbPanel extends JPanel implements ActionListener, KeyListener {
 	private JSplitPane mainPane;
 	private JScrollPane leftPane, rightPane;
 	private JPanel leftPanel, rightPanel;
@@ -86,6 +87,7 @@ public class DbPanel extends JPanel implements ActionListener {
 		searchBarLabelCons.setY(Spring.constant(20));
 		leftPanel.add(searchBarLabel);
 		searchBar = new JTextField(20);
+		searchBar.addKeyListener(this);
 		SpringLayout.Constraints searchBarCons = leftLayout.getConstraints(searchBar);
 		searchBarCons.setX(Spring.constant(120));
 		searchBarCons.setY(Spring.constant(20));
@@ -283,4 +285,19 @@ public class DbPanel extends JPanel implements ActionListener {
 			}
 		}
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (!searchBar.getText().isEmpty()) {
+				search.doClick();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 }
