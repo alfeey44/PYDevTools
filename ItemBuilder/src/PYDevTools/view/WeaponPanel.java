@@ -26,6 +26,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.xml.datatype.Duration;
 
 import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.db.structures.Item;
@@ -48,7 +49,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JScrollPane leftPane, rightPane;
 	private JPanel leftPanel, rightPanel;
 	private JLabel itemIconLabel, itemToolTipLabel;
-	private JButton createItem;
+	private JButton createItem, insertItem;
 	private ImageIcon createItemImage = createImageIcon("../../icons/blacksmithing.png");
 	private ImageDrawingComponent itemIcon, itemToolTip;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ",
@@ -320,6 +321,14 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		craftCons.setY(Spring.constant(565));
 		rightPanel.add(createItem);
 		
+		insertItem = new JButton("Insert Into DB");
+		insertItem.setActionCommand("insert");
+		insertItem.addActionListener(this);
+		SpringLayout.Constraints insertCons = rightLayout.getConstraints(insertItem);
+		insertCons.setX(Spring.constant(900));
+		insertCons.setY(Spring.constant(600));
+		rightPanel.add(insertItem);
+		
 		// Add Panels to Weapon Panel
 		mainPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
 		add(mainPane);
@@ -337,6 +346,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		if (e.getActionCommand().equals(createItem.getActionCommand())) {
 			// Craft button clicked
 			fillItem();
+		} else if (e.getActionCommand().equals(insertItem.getActionCommand())) {
+			try {
+				db.insertItemIntoTemplate(item);
+			} catch (Exception e1) {
+				System.err.println("Failed to insert item into db.");
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -864,6 +880,10 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     }
     
     public void fillCurrentWeaponFields() {
+    	// clear fields
+    	clearFields();
+    	
+    	// Start filling fields from item
     	name.setText(item.getName());
     	desc.setText(item.getDescription());
     	display.setText(Integer.toString(item.getDisplay()));
@@ -994,74 +1014,150 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	if (item.getUnique() != 0)
     		unique.setText(Integer.toString(item.getUnique()));
     	
-    	int[] selectedStatIndices = new int[10];
-    	for (int i = 0; i < 10; i++) {
+    	int[] selectedStatIndices = new int[item.getStatsCount()];
+    	int selectedSCounter = 0;
+    	for (int i = 0; i < item.getStatsCount(); i++) {
     		if (item.getStat_value(i) != 0) {
     			switch(item.getStat_type(i)) {
     			case 3:
-    				selectedStatIndices[i] = 2;
+    				selectedStatIndices[selectedSCounter] = 2;
+    				selectedSCounter++;
     				break;
     			case 4:
-    				selectedStatIndices[i] = 1;
+    				selectedStatIndices[selectedSCounter] = 1;
+    				selectedSCounter++;
     				break;
     			case 5:
-    				selectedStatIndices[i] = 3;
+    				selectedStatIndices[selectedSCounter] = 3;
+    				selectedSCounter++;
     				break;
     			case 6:
-    				selectedStatIndices[i] = 4;
+    				selectedStatIndices[selectedSCounter] = 4;
+    				selectedSCounter++;
     				break;
     			case 7:
-    				selectedStatIndices[i] = 0;
+    				selectedStatIndices[selectedSCounter] = 0;
+    				selectedSCounter++;
     				break;
     			case 12:
-    				selectedStatIndices[i] = 13;
+    				selectedStatIndices[selectedSCounter] = 13;
+    				selectedSCounter++;
     				break;
     			case 13:
-    				selectedStatIndices[i] = 14;
+    				selectedStatIndices[selectedSCounter] = 14;
+    				selectedSCounter++;
     				break;
     			case 14:
-    				selectedStatIndices[i] = 15;
+    				selectedStatIndices[selectedSCounter] = 15;
+    				selectedSCounter++;
     				break;
     			case 15:
-    				selectedStatIndices[i] = 16;
+    				selectedStatIndices[selectedSCounter] = 16;
+    				selectedSCounter++;
     				break;
     			case 31:
-    				selectedStatIndices[i] = 7;
+    				selectedStatIndices[selectedSCounter] = 7;
+    				selectedSCounter++;
     				break;
     			case 32:
-    				selectedStatIndices[i] = 8;
+    				selectedStatIndices[selectedSCounter] = 8;
+    				selectedSCounter++;
     				break;
     			case 35:
-    				selectedStatIndices[i] = 17;
+    				selectedStatIndices[selectedSCounter] = 17;
+    				selectedSCounter++;
     				break;
     			case 36:
-    				selectedStatIndices[i] = 9;
+    				selectedStatIndices[selectedSCounter] = 9;
+    				selectedSCounter++;
     				break;
     			case 37:
-    				selectedStatIndices[i] = 12;
+    				selectedStatIndices[selectedSCounter] = 12;
+    				selectedSCounter++;
     				break;
     			case 38:
-    				selectedStatIndices[i] = 6;
+    				selectedStatIndices[selectedSCounter] = 6;
+    				selectedSCounter++;
     				break;
     			case 44:
-    				selectedStatIndices[i] = 10;
+    				selectedStatIndices[selectedSCounter] = 10;
+    				selectedSCounter++;
     				break;
     			case 45:
-    				selectedStatIndices[i] = 5;
+    				selectedStatIndices[selectedSCounter] = 5;
+    				selectedSCounter++;
     				break;
     			case 47:
-    				selectedStatIndices[i] = 11;
+    				selectedStatIndices[selectedSCounter] = 11;
+    				selectedSCounter++;
     				break;
     			default:
-    				selectedStatIndices[i] = 0;
     				System.err.println("Stat that could not be selected was loaded to weapon panel.");
     				// show error
     				break;
     			}
-    		} else
-    			selectedStatIndices[i] = 0;
+    		}
     	}
     	selectedStats.setSelectedIndices(selectedStatIndices);
+    	
+    	int[] selectedResistsIndices = new int[6];
+    	int selectedRCounter = 0;
+    	if (item.getFire_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 0;
+    		selectedRCounter++;
+    	}
+    	
+    	if (item.getFrost_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 1;
+    		selectedRCounter++;
+    	}
+    	
+    	if (item.getShadow_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 2;
+    		selectedRCounter++;
+    	}	
+    	
+    	if (item.getHoly_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 3;
+    		selectedRCounter++;
+    	}
+    	
+    	if (item.getNature_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 4;
+    		selectedRCounter++;
+    	}
+    	
+    	if (item.getArcane_resist() != 0) {
+    		selectedResistsIndices[selectedRCounter] = 5;
+    		selectedRCounter++;
+    	}
+    	int[] newSelectedResistsIndices = new int[selectedRCounter];
+    	for (int i = 0; i < selectedRCounter; i++) {
+    		newSelectedResistsIndices[i] = selectedResistsIndices[i];
+    	}
+    	
+    	selectedResists.setSelectedIndices(newSelectedResistsIndices);
+    	
+    	if (item.getSpell_id(0) != 0) {
+    		spell1.setText(Integer.toString(item.getSpell_id(0)));
+    		spelltrigger1.setSelectedIndex(item.getSpell_trigger(0));
+    	}
+    	if (item.getSpell_id(1) != 0) {
+	    	spell2.setText(Integer.toString(item.getSpell_id(1)));
+	    	spelltrigger2.setSelectedIndex(item.getSpell_trigger(1));
+    	}
+    	if (item.getSpell_id(2) != 0) {
+	    	spell3.setText(Integer.toString(item.getSpell_id(2)));
+	    	spelltrigger3.setSelectedIndex(item.getSpell_trigger(2));
+    	}
+    	if (item.getSpell_id(3) != 0) {
+	    	spell4.setText(Integer.toString(item.getSpell_id(3)));
+	    	spelltrigger4.setSelectedIndex(item.getSpell_trigger(3));
+    	}
+    	if (item.getSpell_id(4) != 0) {
+	    	spell5.setText(Integer.toString(item.getSpell_id(4)));
+	    	spelltrigger5.setSelectedIndex(item.getSpell_trigger(4));
+    	}
     	
     	// Repaint Icon
     	if (!display.getText().isEmpty()) {
@@ -1104,5 +1200,36 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		
 		rightPanel.repaint();
 		rightPanel.revalidate();
+    }
+    
+    private void clearFields() {
+    	name.setText("");
+    	desc.setText("");
+    	display.setText("");
+    	quality.setSelectedIndex(0);
+    	equip.setSelectedIndex(0);
+    	subclass.setSelectedIndex(0);
+    	sheath.setSelectedIndex(0);
+    	bind.setSelectedIndex(0);
+    	delay.setText("");
+    	mindamage.setText("");
+    	maxdamage.setText("");
+    	armor.setText("");
+    	block.setText("");
+    	reqlvl.setText("");
+    	ilvl.setText("");
+    	unique.setText("");
+    	selectedStats.clearSelection();
+    	selectedResists.clearSelection();
+    	spell1.setText("");
+    	spelltrigger1.setSelectedIndex(0);
+    	spell2.setText("");
+    	spelltrigger2.setSelectedIndex(0);
+    	spell3.setText("");
+    	spelltrigger3.setSelectedIndex(0);
+    	spell4.setText("");
+    	spelltrigger4.setSelectedIndex(0);
+    	spell5.setText("");
+    	spelltrigger5.setSelectedIndex(0);
     }
 }
