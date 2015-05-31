@@ -99,9 +99,84 @@ public class MySQLAccess {
 			item.setSpell_trigger(2, resultSet.getInt("spelltrigger_3"));
 			item.setSpell_trigger(3, resultSet.getInt("spelltrigger_4"));
 			item.setSpell_trigger(4, resultSet.getInt("spelltrigger_5"));
-
-			// TODO: add the rest
-
+			
+			item.setSoundOverrideSubclass(resultSet.getInt("SoundOverrideSubclass"));
+			item.setFlags(resultSet.getInt("Flags"));
+			item.setFlagsExtra(resultSet.getInt("FlagsExtra"));
+			item.setBuyCount(resultSet.getInt("BuyCount"));
+			item.setBuyPrice(resultSet.getInt("BuyPrice"));
+			item.setSellPrice(resultSet.getInt("SellPrice"));
+			item.setAllowableClass(resultSet.getInt("AllowableClass"));
+			item.setAllowableRace(resultSet.getInt("AllowableRace"));
+			item.setRequiredSkill(resultSet.getInt("RequiredSkill"));
+			item.setRequiredSkillRank(resultSet.getInt("RequiredSkillRank"));
+			item.setRequiredSpell(resultSet.getInt("requiredspell"));
+			item.setRequiredHonorRank(resultSet.getInt("requiredhonorrank"));
+			item.setRequiredCityRank(resultSet.getInt("RequiredCityRank"));
+			item.setRequiredReputationFaction(resultSet.getInt("RequiredReputationFaction"));
+			item.setRequiredReputationRank(resultSet.getInt("RequiredReputationRank"));
+			item.setStackable(resultSet.getInt("stackable"));
+			item.setContainerSlots(resultSet.getInt("ContainerSlots"));
+			item.setScalingStatDistribution(resultSet.getInt("ScalingStatDistribution"));
+			item.setScalingStatValue(resultSet.getInt("ScalingStatValue"));
+			item.setMindamage2(resultSet.getInt("dmg_min2"));
+			item.setMaxdamage2(resultSet.getInt("dmg_max2"));
+			item.setDamageType2(resultSet.getInt("dmg_type2"));
+			item.setAmmoType(resultSet.getInt("ammo_type"));
+			item.setRangedModRange(resultSet.getInt("RangedModRange"));
+			item.setSpell_charge(0, resultSet.getInt("spellcharges_1"));
+			item.setSpell_charge(1, resultSet.getInt("spellcharges_2"));
+			item.setSpell_charge(2, resultSet.getInt("spellcharges_3"));
+			item.setSpell_charge(3, resultSet.getInt("spellcharges_4"));
+			item.setSpell_charge(4, resultSet.getInt("spellcharges_5"));
+			item.setSpell_ppm_rate(0, resultSet.getInt("spellppmRate_1"));
+			item.setSpell_ppm_rate(1, resultSet.getInt("spellppmRate_2"));
+			item.setSpell_ppm_rate(2, resultSet.getInt("spellppmRate_3"));
+			item.setSpell_ppm_rate(3, resultSet.getInt("spellppmRate_4"));
+			item.setSpell_ppm_rate(4, resultSet.getInt("spellppmRate_5"));
+			item.setSpell_cd(0, resultSet.getInt("spellcooldown_1"));
+			item.setSpell_cd(1, resultSet.getInt("spellcooldown_2"));
+			item.setSpell_cd(2, resultSet.getInt("spellcooldown_3"));
+			item.setSpell_cd(3, resultSet.getInt("spellcooldown_4"));
+			item.setSpell_cd(4, resultSet.getInt("spellcooldown_5"));
+			item.setSpell_category(0, resultSet.getInt("spellcategory_1"));
+			item.setSpell_category(1, resultSet.getInt("spellcategory_2"));
+			item.setSpell_category(2, resultSet.getInt("spellcategory_3"));
+			item.setSpell_category(3, resultSet.getInt("spellcategory_4"));
+			item.setSpell_category(4, resultSet.getInt("spellcategory_5"));
+			item.setSpell_category_cd(0, resultSet.getInt("spellcategorycooldown_1"));
+			item.setSpell_category_cd(1, resultSet.getInt("spellcategorycooldown_2"));
+			item.setSpell_category_cd(2, resultSet.getInt("spellcategorycooldown_3"));
+			item.setSpell_category_cd(3, resultSet.getInt("spellcategorycooldown_4"));
+			item.setSpell_category_cd(4, resultSet.getInt("spellcategorycooldown_5"));
+			item.setPageText(resultSet.getInt("PageText"));
+			item.setLanguageID(resultSet.getInt("LanguageID"));
+			item.setPageMaterial(resultSet.getInt("PageMaterial"));
+			item.setStartQuest(resultSet.getInt("startquest"));
+			item.setLockID(resultSet.getInt("lockid"));
+			item.setMaterial(resultSet.getInt("Material"));
+			item.setRandomProperty(resultSet.getInt("RandomProperty"));
+			item.setRandomSuffix(resultSet.getInt("RandomSuffix"));
+			item.setItemSet(resultSet.getInt("itemset"));
+			item.setArea(resultSet.getInt("area"));
+			item.setMap(resultSet.getInt("Map"));
+			item.setBagFamily(resultSet.getInt("BagFamily"));
+			item.setTotemCategory(resultSet.getInt("TotemCategory"));
+			item.setSocketBonus(resultSet.getInt("socketBonus"));
+			item.setGemProperties(resultSet.getInt("GemProperties"));
+			item.setRequiredDisenchantSkill(resultSet.getInt("RequiredDisenchantSkill"));
+			item.setArmorDamageModifier(resultSet.getInt("ArmorDamageModifier"));
+			item.setDuration(resultSet.getInt("duration"));
+			item.setItemLimitCategory(resultSet.getInt("ItemLimitCategory"));
+			item.setHolidayID(resultSet.getInt("HolidayId"));
+			item.setScriptName(resultSet.getString("ScriptName"));
+			item.setDisenchantID(resultSet.getInt("DisenchantID"));
+			item.setFoodType(resultSet.getInt("FoodType"));
+			item.setMinMoneyLoot(resultSet.getInt("minMoneyLoot"));
+			item.setMaxMoneyLoot(resultSet.getInt("maxMoneyLoot"));
+			item.setFlagsCustom(resultSet.getInt("flagsCustom"));
+			item.setVerfiedBuild(resultSet.getInt("WDBVerified"));
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -135,21 +210,55 @@ public class MySQLAccess {
 							+ item.getClass_()
 							+ ", "
 							+ item.getSubclass()
-							+ ", -1, ' "
+							+ ", "
+							+ item.getSoundOverrideSubclass()
+							+ ", ' "
 							+ item.getName()
 							+ "', "
 							+ item.getDisplay()
 							+ ", "
 							+ item.getQuality()
-							+ ", 0, 0, 1, 0, 0, "
+							+ ", "
+							+ item.getFlags()
+							+ ", "
+							+ item.getFlagsExtra()
+							+ ", "
+							+ item.getBuyCount()
+							+ ", "
+							+ item.getBuyPrice()
+							+ ", "
+							+ item.getSellPrice()
+							+ ", "
 							+ item.getInventoryType()
-							+ ", -1, -1, "
+							+ ", "
+							+ item.getAllowableClass()
+							+ ", "
+							+ item.getAllowableRace()
+							+ ", "
 							+ item.getIlvl()
 							+ ", "
 							+ item.getReqlvl()
-							+ ", 0, 0, 0, 0, 0, 0, 0, "
+							+ ", "
+							+ item.getRequiredSkill()
+							+ ", "
+							+ item.getRequiredSkillRank()
+							+ ", "
+							+ item.getRequiredSpell()
+							+ ", "
+							+ item.getRequiredHonorRank()
+							+ ", "
+							+ item.getRequiredCityRank()
+							+ ", "
+							+ item.getRequiredReputationFaction()
+							+ ", "
+							+ item.getRequiredReputationRank()
+							+ ", "
 							+ item.getUnique()
-							+ ", 1, 0, "
+							+ ", "
+							+ item.getStackable()
+							+ ", "
+							+ item.getContainerSlots()
+							+ ", "
 							+ item.getStatsCount()
 							+ ", "
 							+ item.getStat_type(0)
@@ -191,11 +300,23 @@ public class MySQLAccess {
 							+ item.getStat_type(9)
 							+ ", "
 							+ item.getStat_value(9)
-							+ ", 0, 0, "
+							+ ", "
+							+ item.getScalingStatDistribution()
+							+ ", "
+							+ item.getScalingStatValue()
+							+ ", "
 							+ item.getMinDamage()
 							+ ", "
 							+ item.getMaxDamage()
-							+ ", 0, 0, 0, 0, "
+							+ ", "
+							+ item.getDamageType()
+							+ ", "
+							+ item.getMindamage2()
+							+ ", "
+							+ item.getMaxdamage2()
+							+ ", "
+							+ item.getDamageType2()
+							+ ", "
 							+ item.getArmor()
 							+ ", "
 							+ item.getHoly_resist()
@@ -211,37 +332,117 @@ public class MySQLAccess {
 							+ item.getArcane_resist()
 							+ ", "
 							+ item.getDelay()
-							+ ", 0, 0, "
+							+ ", "
+							+ item.getAmmoType()
+							+ ", "
+							+ item.getRangedModRange()
+							+ ", "
 							+ item.getSpell_id(0)
 							+ ", "
 							+ item.getSpell_trigger(0)
-							+ ", 0, 0, -1, 0, -1, "
+							+ ", "
+							+ item.getSpell_charge(0)
+							+ ", "
+							+ item.getSpell_ppm_rate(0)
+							+ ", "
+							+ item.getSpell_cd(0)
+							+ ", "
+							+ item.getSpell_category(0)
+							+ ", "
+							+ item.getSpell_category_cd(0)
+							+ ", "
 							+ item.getSpell_id(1)
 							+ ", "
 							+ item.getSpell_trigger(1)
-							+ ", 0, 0, -1, 0, -1, "
+							+ ", "
+							+ item.getSpell_charge(1)
+							+ ", "
+							+ item.getSpell_ppm_rate(1)
+							+ ", "
+							+ item.getSpell_cd(1)
+							+ ", "
+							+ item.getSpell_category(1)
+							+ ", "
+							+ item.getSpell_category_cd(1)
+							+ ", "
 							+ item.getSpell_id(2)
 							+ ", "
 							+ item.getSpell_trigger(2)
-							+ ", 0, 0, -1, 0, -1, "
+							+ ", "
+							+ item.getSpell_charge(2)
+							+ ", "
+							+ item.getSpell_ppm_rate(2)
+							+ ", "
+							+ item.getSpell_cd(2)
+							+ ", "
+							+ item.getSpell_category(2)
+							+ ", "
+							+ item.getSpell_category_cd(2)
+							+ ", "
 							+ item.getSpell_id(3)
 							+ ", "
 							+ item.getSpell_trigger(3)
-							+ ", 0, 0, -1, 0, -1, "
+							+ ", "
+							+ item.getSpell_charge(3)
+							+ ", "
+							+ item.getSpell_ppm_rate(3)
+							+ ", "
+							+ item.getSpell_cd(3)
+							+ ", "
+							+ item.getSpell_category(3)
+							+ ", "
+							+ item.getSpell_category_cd(3)
+							+ ", "
 							+ item.getSpell_id(4)
 							+ ", "
 							+ item.getSpell_trigger(4)
-							+ ", 0, 0, -1, 0, -1, "
+							+ ", "
+							+ item.getSpell_charge(4)
+							+ ", "
+							+ item.getSpell_ppm_rate(4)
+							+ ", "
+							+ item.getSpell_cd(4)
+							+ ", "
+							+ item.getSpell_category(4)
+							+ ", "
+							+ item.getSpell_category_cd(4)
+							+ ", "
 							+ item.getBinds()
 							+ ", '"
 							+ item.getDescription()
-							+ "', 0, 0, 0, 0, 0, 2, "
+							+ "', "
+							+ item.getPageText()
+							+ ", "
+							+ item.getLanguageID()
+							+ ", "
+							+ item.getPageMaterial()
+							+ ", "
+							+ item.getStartQuest()
+							+ ", "
+							+ item.getLockID()
+							+ ", "
+							+ item.getMaterial()
+							+ ", "
 							+ item.getSheath()
-							+ ", 0, 0, "
+							+ ", "
+							+ item.getRandomProperty()
+							+ ", "
+							+ item.getRandomSuffix()
+							+ ", "
 							+ item.getBlock()
-							+ ", 0, "
+							+ ", "
+							+ item.getItemSet()
+							+ ", "
 							+ item.getDuribility()
-							+ ", 0, 0, 0, 0, "
+							+ ", "
+							+ item.getArea()
+							+ ", "
+							+ item.getMap()
+							+ ", "
+							+ item.getBagFamily()
+							+ ", "
+							+ item.getTotemCategory()
+							+ ", "
 							+ item.getSocket_color(0)
 							+ ", "
 							+ item.getSocket_content(0)
@@ -253,7 +454,33 @@ public class MySQLAccess {
 							+ item.getSocket_color(2)
 							+ ", "
 							+ item.getSocket_content(2)
-							+ ", 0, 0, -1, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, 1337);");
+							+ ", "
+							+ item.getSocketBonus()
+							+ ", "
+							+ item.getGemProperties()
+							+ ", "
+							+ item.getRequiredDisenchantSkill()
+							+ ", "
+							+ item.getArmorDamageModifier()
+							+ ", "
+							+ item.getDuration()
+							+ ", "
+							+ item.getItemLimitCategory()
+							+ ", "
+							+ item.getHolidayID()
+							+ ", '"
+							+ item.getScriptName()
+							+ "', "
+							+ item.getDisenchantID()
+							+ ", "
+							+ item.getFoodType()
+							+ ", "
+							+ item.getMinMoneyLoot()
+							+ ", "
+							+ item.getMaxMoneyLoot()
+							+ ", "
+							+ item.getFlagsCustom()
+							+ ", 1337);");
 		} catch (Exception e) {
 			throw e;
 		} finally {

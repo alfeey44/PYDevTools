@@ -4,17 +4,30 @@ import PYDevTools.enums.ItemBonding;
 import PYDevTools.enums.ItemType;
 
 public class Item {
-	private String name, description;
+	private String name, description, scriptName;
 	private int entry, class_, display, quality, inventoryType, subclass, sheath, binds, delay,
 				armor, block, reqlvl, ilvl, unique, statsCount, holy_resist, fire_resist,
 				nature_resist, frost_resist, shadow_resist, arcane_resist, mindamage, maxdamage,
 				duribility;
+	private int soundOverrideSubclass, flags, flagsExtra, buyCount, buyPrice, sellPrice,
+				allowableClass, allowableRace, requiredSkill, requiredSkillRank, requiredSpell,
+				requiredHonorRank, requiredCityRank, requiredReputationFaction, requiredReputationRank,
+				stackable, containerSlots, scalingStatDistribution, scalingStatValue, damageType,
+				mindamage2, maxdamage2, damageType2, ammoType, rangedModRange, pageText, languageID,
+				pageMaterial, startQuest, lockID, material, randomProperty, randomSuffix, itemSet, area, 
+				map, bagFamily, totemCategory, socketBonus, gemProperties, requiredDisenchantSkill, 
+				armorDamageModifier, duration, itemLimitCategory, holidayID, disenchantID, foodType, 
+				minMoneyLoot, maxMoneyLoot, flagsCustom, verfiedBuild;
 
 	private int[] stat_values;
 	private int[] stat_types;
 	private int[] spell_ids;
 	private int[] spell_triggers;
+	private int[] spell_charges;
+	private int[] spell_ppm_rate;
 	private int[] spell_cds;
+	private int[] spell_categories;
+	private int[] spell_category_cds;
 	private int[] socket_colors;
 	private int[] socket_contents;
 	
@@ -337,6 +350,558 @@ public class Item {
 		this.duribility = duribility;
 	}
 	
+	public String getScriptName() {
+		return scriptName;
+	}
+
+	public void setScriptName(String scriptName) {
+		this.scriptName = scriptName;
+	}
+
+	public int getMindamage() {
+		return mindamage;
+	}
+
+	public void setMindamage(int mindamage) {
+		this.mindamage = mindamage;
+	}
+
+	public int getMaxdamage() {
+		return maxdamage;
+	}
+
+	public void setMaxdamage(int maxdamage) {
+		this.maxdamage = maxdamage;
+	}
+
+	public int getSoundOverrideSubclass() {
+		return soundOverrideSubclass;
+	}
+
+	public void setSoundOverrideSubclass(int soundOverrideSubclass) {
+		this.soundOverrideSubclass = soundOverrideSubclass;
+	}
+
+	public int getFlags() {
+		return flags;
+	}
+
+	public void setFlags(int flags) {
+		this.flags = flags;
+	}
+
+	public int getFlagsExtra() {
+		return flagsExtra;
+	}
+
+	public void setFlagsExtra(int flagsExtra) {
+		this.flagsExtra = flagsExtra;
+	}
+
+	public int getBuyCount() {
+		return buyCount;
+	}
+
+	public void setBuyCount(int buyCount) {
+		this.buyCount = buyCount;
+	}
+
+	public int getBuyPrice() {
+		return buyPrice;
+	}
+
+	public void setBuyPrice(int buyPrice) {
+		this.buyPrice = buyPrice;
+	}
+
+	public int getSellPrice() {
+		return sellPrice;
+	}
+
+	public void setSellPrice(int sellPrice) {
+		this.sellPrice = sellPrice;
+	}
+
+	public int getAllowableClass() {
+		return allowableClass;
+	}
+
+	public void setAllowableClass(int allowableClass) {
+		this.allowableClass = allowableClass;
+	}
+
+	public int getAllowableRace() {
+		return allowableRace;
+	}
+
+	public void setAllowableRace(int allowableRace) {
+		this.allowableRace = allowableRace;
+	}
+
+	public int getRequiredSkill() {
+		return requiredSkill;
+	}
+
+	public void setRequiredSkill(int requiredSkill) {
+		this.requiredSkill = requiredSkill;
+	}
+
+	public int getRequiredSkillRank() {
+		return requiredSkillRank;
+	}
+
+	public void setRequiredSkillRank(int requiredSkillRank) {
+		this.requiredSkillRank = requiredSkillRank;
+	}
+
+	public int getRequiredSpell() {
+		return requiredSpell;
+	}
+
+	public void setRequiredSpell(int requiredSpell) {
+		this.requiredSpell = requiredSpell;
+	}
+
+	public int getRequiredHonorRank() {
+		return requiredHonorRank;
+	}
+
+	public void setRequiredHonorRank(int requiredHonorRank) {
+		this.requiredHonorRank = requiredHonorRank;
+	}
+
+	public int getRequiredCityRank() {
+		return requiredCityRank;
+	}
+
+	public void setRequiredCityRank(int requiredCityRank) {
+		this.requiredCityRank = requiredCityRank;
+	}
+
+	public int getRequiredReputationFaction() {
+		return requiredReputationFaction;
+	}
+
+	public void setRequiredReputationFaction(int requiredReputationFaction) {
+		this.requiredReputationFaction = requiredReputationFaction;
+	}
+
+	public int getRequiredReputationRank() {
+		return requiredReputationRank;
+	}
+
+	public void setRequiredReputationRank(int requiredReputationRank) {
+		this.requiredReputationRank = requiredReputationRank;
+	}
+
+	public int getStackable() {
+		return stackable;
+	}
+
+	public void setStackable(int stackable) {
+		this.stackable = stackable;
+	}
+
+	public int getContainerSlots() {
+		return containerSlots;
+	}
+
+	public void setContainerSlots(int containerSlots) {
+		this.containerSlots = containerSlots;
+	}
+
+	public int getScalingStatDistribution() {
+		return scalingStatDistribution;
+	}
+
+	public void setScalingStatDistribution(int scalingStatDistribution) {
+		this.scalingStatDistribution = scalingStatDistribution;
+	}
+
+	public int getScalingStatValue() {
+		return scalingStatValue;
+	}
+
+	public void setScalingStatValue(int scalingStatValue) {
+		this.scalingStatValue = scalingStatValue;
+	}
+
+	public int getDamageType() {
+		return damageType;
+	}
+
+	public void setDamageType(int damageType) {
+		this.damageType = damageType;
+	}
+
+	public int getMindamage2() {
+		return mindamage2;
+	}
+
+	public void setMindamage2(int mindamage2) {
+		this.mindamage2 = mindamage2;
+	}
+
+	public int getMaxdamage2() {
+		return maxdamage2;
+	}
+
+	public void setMaxdamage2(int maxdamage2) {
+		this.maxdamage2 = maxdamage2;
+	}
+
+	public int getDamageType2() {
+		return damageType2;
+	}
+
+	public void setDamageType2(int damageType2) {
+		this.damageType2 = damageType2;
+	}
+
+	public int getAmmoType() {
+		return ammoType;
+	}
+
+	public void setAmmoType(int ammoType) {
+		this.ammoType = ammoType;
+	}
+
+	public int getRangedModRange() {
+		return rangedModRange;
+	}
+
+	public void setRangedModRange(int rangedModRange) {
+		this.rangedModRange = rangedModRange;
+	}
+
+	public int getPageText() {
+		return pageText;
+	}
+
+	public void setPageText(int pageText) {
+		this.pageText = pageText;
+	}
+
+	public int getLanguageID() {
+		return languageID;
+	}
+
+	public void setLanguageID(int languageID) {
+		this.languageID = languageID;
+	}
+
+	public int getPageMaterial() {
+		return pageMaterial;
+	}
+
+	public void setPageMaterial(int pageMaterial) {
+		this.pageMaterial = pageMaterial;
+	}
+
+	public int getStartQuest() {
+		return startQuest;
+	}
+
+	public void setStartQuest(int startQuest) {
+		this.startQuest = startQuest;
+	}
+
+	public int getLockID() {
+		return lockID;
+	}
+
+	public void setLockID(int lockID) {
+		this.lockID = lockID;
+	}
+
+	public int getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(int material) {
+		this.material = material;
+	}
+
+	public int getRandomProperty() {
+		return randomProperty;
+	}
+
+	public void setRandomProperty(int randomProperty) {
+		this.randomProperty = randomProperty;
+	}
+
+	public int getRandomSuffix() {
+		return randomSuffix;
+	}
+
+	public void setRandomSuffix(int randomSuffix) {
+		this.randomSuffix = randomSuffix;
+	}
+
+	public int getItemSet() {
+		return itemSet;
+	}
+
+	public void setItemSet(int itemSet) {
+		this.itemSet = itemSet;
+	}
+
+	public int getArea() {
+		return area;
+	}
+
+	public void setArea(int area) {
+		this.area = area;
+	}
+
+	public int getMap() {
+		return map;
+	}
+
+	public void setMap(int map) {
+		this.map = map;
+	}
+
+	public int getBagFamily() {
+		return bagFamily;
+	}
+
+	public void setBagFamily(int bagFamily) {
+		this.bagFamily = bagFamily;
+	}
+
+	public int getTotemCategory() {
+		return totemCategory;
+	}
+
+	public void setTotemCategory(int totemCategory) {
+		this.totemCategory = totemCategory;
+	}
+
+	public int getSocketBonus() {
+		return socketBonus;
+	}
+
+	public void setSocketBonus(int socketBonus) {
+		this.socketBonus = socketBonus;
+	}
+
+	public int getGemProperties() {
+		return gemProperties;
+	}
+
+	public void setGemProperties(int gemProperties) {
+		this.gemProperties = gemProperties;
+	}
+
+	public int getRequiredDisenchantSkill() {
+		return requiredDisenchantSkill;
+	}
+
+	public void setRequiredDisenchantSkill(int requiredDisenchantSkill) {
+		this.requiredDisenchantSkill = requiredDisenchantSkill;
+	}
+
+	public int getArmorDamageModifier() {
+		return armorDamageModifier;
+	}
+
+	public void setArmorDamageModifier(int armorDamageModifier) {
+		this.armorDamageModifier = armorDamageModifier;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public int getItemLimitCategory() {
+		return itemLimitCategory;
+	}
+
+	public void setItemLimitCategory(int itemLimitCategory) {
+		this.itemLimitCategory = itemLimitCategory;
+	}
+
+	public int getHolidayID() {
+		return holidayID;
+	}
+
+	public void setHolidayID(int holidayID) {
+		this.holidayID = holidayID;
+	}
+
+	public int getDisenchantID() {
+		return disenchantID;
+	}
+
+	public void setDisenchantID(int disenchantID) {
+		this.disenchantID = disenchantID;
+	}
+
+	public int getFoodType() {
+		return foodType;
+	}
+
+	public void setFoodType(int foodType) {
+		this.foodType = foodType;
+	}
+
+	public int getMinMoneyLoot() {
+		return minMoneyLoot;
+	}
+
+	public void setMinMoneyLoot(int minMoneyLoot) {
+		this.minMoneyLoot = minMoneyLoot;
+	}
+
+	public int getMaxMoneyLoot() {
+		return maxMoneyLoot;
+	}
+
+	public void setMaxMoneyLoot(int maxMoneyLoot) {
+		this.maxMoneyLoot = maxMoneyLoot;
+	}
+
+	public int getFlagsCustom() {
+		return flagsCustom;
+	}
+
+	public void setFlagsCustom(int flagsCustom) {
+		this.flagsCustom = flagsCustom;
+	}
+
+	public int getVerfiedBuild() {
+		return verfiedBuild;
+	}
+
+	public void setVerfiedBuild(int verfiedBuild) {
+		this.verfiedBuild = verfiedBuild;
+	}
+
+	public int[] getStat_values() {
+		return stat_values;
+	}
+
+	public void setStat_values(int[] stat_values) {
+		this.stat_values = stat_values;
+	}
+
+	public int[] getStat_types() {
+		return stat_types;
+	}
+
+	public void setStat_types(int[] stat_types) {
+		this.stat_types = stat_types;
+	}
+
+	public int[] getSpell_ids() {
+		return spell_ids;
+	}
+
+	public void setSpell_ids(int[] spell_ids) {
+		this.spell_ids = spell_ids;
+	}
+
+	public int[] getSpell_triggers() {
+		return spell_triggers;
+	}
+
+	public void setSpell_triggers(int[] spell_triggers) {
+		this.spell_triggers = spell_triggers;
+	}
+
+	public int[] getSpell_charges() {
+		return spell_charges;
+	}
+	
+	public int getSpell_charge(int index) {
+		return spell_charges[index];
+	}
+
+	public void setSpell_charges(int[] spell_charges) {
+		this.spell_charges = spell_charges;
+	}
+	
+	public void setSpell_charge(int index, int charges) {
+		this.spell_charges[index] = charges;
+	}
+
+	public int[] getSpell_ppm_rate() {
+		return spell_ppm_rate;
+	}
+	
+	public int getSpell_ppm_rate(int index) {
+		return spell_ppm_rate[index];
+	}
+
+	public void setSpell_ppm_rate(int[] spell_ppm_rate) {
+		this.spell_ppm_rate = spell_ppm_rate;
+	}
+	
+	public void setSpell_ppm_rate(int index, int ppm) {
+		this.spell_ppm_rate[index] = ppm;
+	}
+
+	public int[] getSpell_cds() {
+		return spell_cds;
+	}
+
+	public void setSpell_cds(int[] spell_cds) {
+		this.spell_cds = spell_cds;
+	}
+
+	public int[] getSpell_categories() {
+		return spell_categories;
+	}
+	
+	public int getSpell_category(int index) {
+		return spell_categories[index];
+	}
+
+	public void setSpell_categories(int[] spell_categories) {
+		this.spell_categories = spell_categories;
+	}
+	
+	public void setSpell_category(int index, int category) {
+		this.spell_categories[index] = category;
+	}
+
+	public int[] getSpell_category_cds() {
+		return spell_category_cds;
+	}
+	
+	public int getSpell_category_cd(int index) {
+		return spell_category_cds[index];
+	}
+
+	public void setSpell_category_cds(int[] spell_category_cds) {
+		this.spell_category_cds = spell_category_cds;
+	}
+	
+	public void setSpell_category_cd(int index, int cd) {
+		this.spell_category_cds[index] = cd;
+	}
+
+	public int[] getSocket_colors() {
+		return socket_colors;
+	}
+
+	public void setSocket_colors(int[] socket_colors) {
+		this.socket_colors = socket_colors;
+	}
+
+	public int[] getSocket_contents() {
+		return socket_contents;
+	}
+
+	public void setSocket_contents(int[] socket_contents) {
+		this.socket_contents = socket_contents;
+	}
+
 	public ItemType getItemType() {
 		switch(class_) {
 		case 0:
