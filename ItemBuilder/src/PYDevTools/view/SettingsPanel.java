@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -26,7 +28,7 @@ import javax.swing.SpringLayout;
 import PYDevTools.utilities.AESEncrypt;
 
 @SuppressWarnings("serial")
-public class SettingsPanel extends JPanel implements ActionListener {
+public class SettingsPanel extends JPanel implements ActionListener, KeyListener {
 	
 	private static SettingsPanel instance = null;
 	private static JFrame settingsFrame;
@@ -91,24 +93,28 @@ public class SettingsPanel extends JPanel implements ActionListener {
 		
 		// TextFields
 		dbUser = new JTextField(15);
+		dbUser.addKeyListener(this);
 		dbUser.setFont(defaultFont);
 		SpringLayout.Constraints dbUserCons = layout.getConstraints(dbUser);
 		dbUserCons.setX(Spring.constant(170));
 		dbUserCons.setY(Spring.constant(10));
 		add(dbUser);
 		dbPass = new JPasswordField(15);
+		dbPass.addKeyListener(this);
 		dbPass.setFont(defaultFont);
 		SpringLayout.Constraints dbPassCons = layout.getConstraints(dbPass);
 		dbPassCons.setX(Spring.constant(170));
 		dbPassCons.setY(Spring.constant(40));
 		add(dbPass);
 		dbName = new JTextField(15);
+		dbName.addKeyListener(this);
 		dbName.setFont(defaultFont);
 		SpringLayout.Constraints dbNameCons = layout.getConstraints(dbName);
 		dbNameCons.setX(Spring.constant(170));
 		dbNameCons.setY(Spring.constant(70));
 		add(dbName);
 		dbHost = new JTextField(15);
+		dbHost.addKeyListener(this);
 		dbHost.setFont(defaultFont);
 		SpringLayout.Constraints dbHostCons = layout.getConstraints(dbHost);
 		dbHostCons.setX(Spring.constant(170));
@@ -291,4 +297,19 @@ public class SettingsPanel extends JPanel implements ActionListener {
 		}
 		return temp;
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (!dbUser.getText().isEmpty() && !dbName.getText().isEmpty() && !dbPass.getText().isEmpty() && !dbHost.getText().isEmpty()) {
+				save.doClick();
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 }
