@@ -540,11 +540,7 @@ public class MySQLAccess {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// setup the connection with the DB.
-			try {
-				password = AESEncrypt.decrypt(password);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			
 			connect = DriverManager.getConnection("jdbc:mysql://" + host + "/"
 					+ dbname + "?" + "user=" + username + "&password="
 					+ password);
