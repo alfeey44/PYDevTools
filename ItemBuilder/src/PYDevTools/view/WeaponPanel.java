@@ -10,27 +10,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.xml.datatype.Duration;
 
 import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.db.structures.Item;
-import PYDevTools.enums.ItemInventoryType;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemIconFinder;
 import PYDevTools.utilities.ItemToolTip;
@@ -41,7 +43,8 @@ import PYDevTools.utilities.SpellFinder;
  * @author alfeey44
  *
  */
-public class WeaponPanel extends JPanel implements FocusListener, ActionListener {
+@SuppressWarnings("serial")
+public class WeaponPanel extends JPanel implements FocusListener, ActionListener, KeyListener {
 	
 	private static WeaponPanel instance = null;
 	// Panels
@@ -50,11 +53,10 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JPanel leftPanel, rightPanel;
 	private JLabel itemIconLabel, itemToolTipLabel;
 	private JButton createItem, insertItem;
-	private ImageIcon createItemImage = createImageIcon("../../icons/blacksmithing.png");
+	private ImageIcon anvilImageIcon;
 	private ImageDrawingComponent itemIcon, itemToolTip;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ",
-								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Armor: ", 
-								"Block: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
+								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
 								"Stats: ", "Resists: ", "Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ",
 								"Spell 3: ", "Spell 3 Trigger: ", "Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", 
 								"Sockets: " };
@@ -64,7 +66,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JComboBox<String> quality, equip, subclass, sheath, bind, role, spelltrigger1, spelltrigger2,
 	   						  spelltrigger3, spelltrigger4, spelltrigger5;
 	private JList<String> selectedStats;
-	private String[] stats = { "Stamina", "Strength", "Agility", "Intellect", "Spirit", "Spell Power", "Attack Power",
+	private String[] stats = {  "Agility", "Stamina", "Strength", "Intellect", "Spirit", "Spell Power", "Attack Power",
 								"Hit Rating", "Crit Rating", "Haste Rating", "Armor Penetration", "Spell Penetration", 
 								"Expertise", "Defense", "Dodge", "Parry", "Block", "Resilience", };
 	private String[] qualities = { "Gray", "White", "Green", "Blue", "Purple", "Orange", "Heirloom" };
@@ -85,8 +87,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private SpellFinder spellFinder = SpellFinder.getInstance();
 	private Item item = new Item();
 	private MySQLAccess db = new MySQLAccess();
-	
-	private float serverMultiplier;
+	private ServerConfigPanel serverConfigPanel = ServerConfigPanel.getInstance();
 	
 	public static WeaponPanel getInstance() {
 		if (instance == null) {
@@ -97,6 +98,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	
 	public WeaponPanel() {
 		super(new SpringLayout());
+		
+		anvilImageIcon = new ImageIcon("src/icons/anvil_small.jpg");
 		
 		/////////////
 		// Content //
@@ -113,16 +116,19 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 			switch(i) {
 				case 0:
 					name = new JTextField(15);
+					name.addKeyListener(this);
 					l.setLabelFor(name);
 					leftPanel.add(name);
 					break;
 				case 1:
 					desc = new JTextField(15);
+					desc.addKeyListener(this);
 					l.setLabelFor(desc);
 					leftPanel.add(desc);
 					break;
 				case 2:
 					display = new JTextField(15);
+					display.addKeyListener(this);
 					l.setLabelFor(display);
 					leftPanel.add(display);
 					break;
@@ -158,117 +164,119 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					break;
 				case 8:
 					delay = new JTextField(15);
+					delay.addKeyListener(this);
 					l.setLabelFor(delay);
 					leftPanel.add(delay);
 					break;
 				case 9:
 					mindamage = new JTextField(15);
+					mindamage.addKeyListener(this);
 					l.setLabelFor(mindamage);
 					leftPanel.add(mindamage);
 					break;
 				case 10:
 					maxdamage = new JTextField(15);
+					maxdamage.addKeyListener(this);
 					l.setLabelFor(maxdamage);
 					leftPanel.add(maxdamage);
 					break;
 				case 11:
-					armor = new JTextField(15);
-					l.setLabelFor(armor);
-					leftPanel.add(armor);
-					break;
-				case 12:
-					block = new JTextField(15);
-					l.setLabelFor(block);
-					leftPanel.add(block);
-					break;
-				case 13:
 					reqlvl = new JTextField(15);
+					reqlvl.addKeyListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
-				case 14:
+				case 12:
 					ilvl = new JTextField(15);
+					ilvl.addKeyListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
-				case 15:
+				case 13:
 					unique = new JTextField(15);
+					unique.addKeyListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
-				case 16:
+				case 14:
 					role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
 					l.setLabelFor(role);
 					leftPanel.add(role);
 					break;
-				case 17:
+				case 15:
 					selectedStats = new JList<String>(stats);
 					l.setLabelFor(selectedStats);
 					leftPanel.add(selectedStats);
 					break;
-				case 18:
+				case 16:
 					selectedResists = new JList<String>(resists);
 					l.setLabelFor(selectedResists);
 					leftPanel.add(selectedResists);
 					break;
-				case 19:
+				case 17:
 					spell1 = new JTextField(15);
+					spell1.addKeyListener(this);
 					l.setLabelFor(spell1);
 					leftPanel.add(spell1);
 					break;
-				case 20:
+				case 18:
 					spelltrigger1 = new JComboBox<String>(spelltriggers);
 					spelltrigger1.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger1);
 					leftPanel.add(spelltrigger1);
 					break;
-				case 21:
+				case 19:
 					spell2 = new JTextField(15);
+					spell2.addKeyListener(this);
 					l.setLabelFor(spell2);
 					leftPanel.add(spell2);
 					break;
-				case 22:
+				case 20:
 					spelltrigger2 = new JComboBox<String>(spelltriggers);
 					spelltrigger2.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger2);
 					leftPanel.add(spelltrigger2);
 					break;
-				case 23:
+				case 21:
 					spell3 = new JTextField(15);
+					spell3.addKeyListener(this);
 					l.setLabelFor(spell3);
 					leftPanel.add(spell3);
 					break;
-				case 24:
+				case 22:
 					spelltrigger3 = new JComboBox<String>(spelltriggers);
 					spelltrigger3.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger3);
 					leftPanel.add(spelltrigger3);
 					break;
-				case 25:
+				case 23:
 					spell4 = new JTextField(15);
+					spell4.addKeyListener(this);
 					l.setLabelFor(spell4);
 					leftPanel.add(spell4);
 					break;
-				case 26:
+				case 24:
 					spelltrigger4 = new JComboBox<String>(spelltriggers);
 					spelltrigger4.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger4);
 					leftPanel.add(spelltrigger4);
 					break;
-				case 27:
+				case 25:
 					spell5 = new JTextField(15);
+					spell5.addKeyListener(this);
 					l.setLabelFor(spell5);
 					leftPanel.add(spell5);
 					break;
-				case 28:
+				case 26:
 					spelltrigger5 = new JComboBox<String>(spelltriggers);
 					spelltrigger5.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger5);
 					leftPanel.add(spelltrigger5);
 					break;
-				case 29:
+				case 27:
 					socket = new JTextField(15);
+					socket.addKeyListener(this);
 					l.setLabelFor(socket);
 					leftPanel.add(socket);
 					break;
@@ -313,12 +321,12 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		invalidDisplayIdCons.setY(Spring.constant(140));
 		rightPanel.add(invalidDisplayId);
 		
-		createItem = new JButton("Craft", createItemImage);
+		createItem = new JButton("Craft", anvilImageIcon);
 		createItem.setActionCommand("craft");
 		createItem.addActionListener(this);
 		SpringLayout.Constraints craftCons = rightLayout.getConstraints(createItem);
 		craftCons.setX(Spring.constant(900));
-		craftCons.setY(Spring.constant(565));
+		craftCons.setY(Spring.constant(550));
 		rightPanel.add(createItem);
 		
 		insertItem = new JButton("Insert Into DB");
@@ -333,27 +341,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		mainPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPane, rightPane);
 		add(mainPane);
 		SpringUtilities.makeCompactGrid(this, 1, 1, 6, 6, 6, 6);
-	}
-
-	@Override
-	public void focusGained(FocusEvent e) {}
-
-	@Override
-	public void focusLost(FocusEvent e) {}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals(createItem.getActionCommand())) {
-			// Craft button clicked
-			fillItem();
-		} else if (e.getActionCommand().equals(insertItem.getActionCommand())) {
-			try {
-				db.insertItemIntoTemplate(item);
-			} catch (Exception e1) {
-				System.err.println("Failed to insert item into db.");
-				e1.printStackTrace();
-			}
-		}
 	}
 	
 	/** Returns an ImageIcon, or null if the path was invalid. */
@@ -370,6 +357,19 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     /** Fills item class with fields from panel **/
     private void fillItem() {
     	item = new Item();
+    	int entry = Integer.parseInt(SettingsPanel.getInstance().getNextEntryID());
+    	int blockCounter = 0;
+    	while (db.isUsedEntry(entry)) {
+    		entry++;
+    		blockCounter++;
+    		// in case it is stuck in a large block, it will run somewhat faster
+    		if (blockCounter == 3) {
+    			entry += 10;
+    			blockCounter = 1;
+    		}
+    	}
+    	item.setEntry(entry);
+    	
     	// Crafting a weapon
     	item.setClass_(2);
     	
@@ -392,7 +392,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				invalidDisplayId.setVisible(false);
 				itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
 				itemIcon.resize(80, 80);
-				System.out.println("Display Value: " + display.getText());
 				itemIcon.repaint();
 			} else {
 				// Display Id invalid
@@ -419,14 +418,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		
 		if (!maxdamage.getText().isEmpty()) {
 			item.setMaxDamage(Integer.parseInt(maxdamage.getText()));
-		}
-		
-		if (!armor.getText().isEmpty()) {
-			item.setArmor(Integer.parseInt(armor.getText()));
-		}
-		
-		if (!block.getText().isEmpty()) {
-			item.setBlock(Integer.parseInt(block.getText()));
 		}
 		
 		if (!reqlvl.getText().isEmpty()) {
@@ -576,32 +567,34 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	// Stats
     	int statsToCalc[] = selectedStats.getSelectedIndices();
     	
+    	item.setStatsCount(statsToCalc.length);
+    	
     	if (statsToCalc.length > 10) {
     		// print error message, can only have 10 stats
     	}
     	
     	for (int i = 0; i < statsToCalc.length && i < 10; i++) {
     		String statText = "";
-    		// initialize true because their are less normal stats
+    		// initialize true because their are fewer normal stats
     		boolean isEquipStat = true;
     		float statMultiplier = 1;
     		switch(statsToCalc[i]) {
-    		case 0: //stamina
+    		case 0: //agility
+    			item.setStat_type(i, 3);
+    			statMultiplier = 1.26f;
+    			statText = " Agility";
+    			isEquipStat = false;
+    			break;
+    		case 1: //stamina
     			item.setStat_type(i, 7);
     			statMultiplier = 1.75f;
     			statText = " Stamina";
     			isEquipStat = false;
     			break;
-    		case 1: //strength
+    		case 2: //strength
     			item.setStat_type(i, 4);
     			statMultiplier = 1.45f;
     			statText = " Strength";
-    			isEquipStat = false;
-    			break;
-    		case 2: //agility
-    			item.setStat_type(i, 3);
-    			statMultiplier = 1.26f;
-    			statText = " Agility";
     			isEquipStat = false;
     			break;
 			case 3: //intellect
@@ -684,7 +677,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     			break;
     		}
     		
-    		float subclassMultiplier = 1;
+    		double subclassMultiplier = 1;
     		
     		switch (item.getSubclass()) {
     		// One handers
@@ -693,7 +686,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		case 7:
     		case 13:
     		case 15:
-    			subclassMultiplier = 0.85f;
+    			subclassMultiplier = Double.parseDouble(serverConfigPanel.getOneHandStatMultiplier());
     			break;
     		// ranged
     		case 2:
@@ -702,7 +695,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		case 17:
     		case 18:
     		case 19:
-    			subclassMultiplier = 1.15f;
+    			subclassMultiplier = Double.parseDouble(serverConfigPanel.getRangedStatMultiplier());
     			break;
     		// Two handers
     		case 1:
@@ -710,15 +703,15 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		case 6:
     		case 8:
     		case 10:
-    			subclassMultiplier = 1.55f;
+    			subclassMultiplier = Double.parseDouble(serverConfigPanel.getTwoHandStatMultiplier());
     			break;
     		default:
     			break;
     		}
     		// TODO: Make this serverMultiplier an option
-    		serverMultiplier = 1;
+    		double serverWeaponMultiplier = Double.parseDouble(serverConfigPanel.getWeaponStatMultiplier());
     		// Do calculation for value based off of quality and ilvl and subclass
-    		float statValue = serverMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/4;
+    		double statValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/4;
     		item.setStat_value(i, (int)statValue);
     	}
     	
@@ -767,7 +760,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		}
     		
     		// TODO: Make this serverMultiplier an option
-    		serverMultiplier = 1;
+    		double serverWeaponMultiplier = Double.parseDouble(serverConfigPanel.getWeaponStatMultiplier());
     		// Do calculation for value based off of quality and ilvl and subclass
     		
     		switch(restistToCalc[i]) {
@@ -812,45 +805,35 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	if (!spell1.getText().isEmpty()) {
     		int spellindex = 0;
     		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell1.getText()));
-    		System.out.println("Spell Description: " + spellDesc);
     		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell1.getText()));
-    		System.out.println("Spell Icon: " + spellIcon);
     		item.setSpell_id(spellindex, Integer.parseInt(spell1.getText()));
     		item.setSpell_trigger(spellindex, spelltrigger1.getSelectedIndex());
     	}
     	if (!spell2.getText().isEmpty()) {
     		int spellindex = 1;
     		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell2.getText()));
-    		System.out.println("Spell Description: " + spellDesc);
     		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell2.getText()));
-    		System.out.println("Spell Icon: " + spellIcon);
     		item.setSpell_id(1, Integer.parseInt(spell2.getText()));
     		item.setSpell_trigger(spellindex, spelltrigger2.getSelectedIndex());
     	}
     	if (!spell3.getText().isEmpty()) {
     		int spellindex = 2;
     		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell3.getText()));
-    		System.out.println("Spell Description: " + spellDesc);
     		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell3.getText()));
-    		System.out.println("Spell Icon: " + spellIcon);
     		item.setSpell_id(2, Integer.parseInt(spell3.getText()));
     		item.setSpell_trigger(spellindex, spelltrigger3.getSelectedIndex());
     	}
     	if (!spell4.getText().isEmpty()) {
     		int spellindex = 3;
     		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell4.getText()));
-    		System.out.println("Spell Description: " + spellDesc);
     		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell4.getText()));
-    		System.out.println("Spell Icon: " + spellIcon);
     		item.setSpell_id(3, Integer.parseInt(spell4.getText()));
     		item.setSpell_trigger(spellindex, spelltrigger4.getSelectedIndex());
     	}
     	if (!spell5.getText().isEmpty()) {
     		int spellindex = 4;
     		String spellDesc = spellFinder.findSpellDescriptionById(Integer.parseInt(spell5.getText()));
-    		System.out.println("Spell Description: " + spellDesc);
     		String spellIcon = spellFinder.findSpellIconById(Integer.parseInt(spell5.getText()));
-    		System.out.println("Spell Icon: " + spellIcon);
     		item.setSpell_id(4, Integer.parseInt(spell5.getText()));
     		item.setSpell_trigger(spellindex, spelltrigger5.getSelectedIndex());
     	}
@@ -1003,10 +986,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		mindamage.setText(Integer.toString(item.getMinDamage()));
     	if (item.getMaxDamage() != 0)
     		maxdamage.setText(Integer.toString(item.getMaxDamage()));
-    	if (item.getArmor() != 0)
-    		armor.setText(Integer.toString(item.getArmor()));
-    	if (item.getBlock() != 0)
-    		block.setText(Integer.toString(item.getBlock()));
     	if (item.getReqlvl() != 0)
     		reqlvl.setText(Integer.toString(item.getReqlvl()));
     	if (item.getIlvl() != 0)
@@ -1020,11 +999,11 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		if (item.getStat_value(i) != 0) {
     			switch(item.getStat_type(i)) {
     			case 3:
-    				selectedStatIndices[selectedSCounter] = 2;
+    				selectedStatIndices[selectedSCounter] = 0;
     				selectedSCounter++;
     				break;
     			case 4:
-    				selectedStatIndices[selectedSCounter] = 1;
+    				selectedStatIndices[selectedSCounter] = 2;
     				selectedSCounter++;
     				break;
     			case 5:
@@ -1036,7 +1015,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     				selectedSCounter++;
     				break;
     			case 7:
-    				selectedStatIndices[selectedSCounter] = 0;
+    				selectedStatIndices[selectedSCounter] = 1;
     				selectedSCounter++;
     				break;
     			case 12:
@@ -1177,7 +1156,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 				invalidDisplayId.setVisible(false);
 				itemIcon.setImage("src/icons/WoWIcons/" + iconPath + ".png");
 				itemIcon.resize(80, 80);
-				System.out.println("Display Value: " + display.getText());
 				itemIcon.repaint();
 			} else {
 				// Display Id invalid
@@ -1214,8 +1192,6 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	delay.setText("");
     	mindamage.setText("");
     	maxdamage.setText("");
-    	armor.setText("");
-    	block.setText("");
     	reqlvl.setText("");
     	ilvl.setText("");
     	unique.setText("");
@@ -1232,4 +1208,94 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	spell5.setText("");
     	spelltrigger5.setSelectedIndex(0);
     }
+    
+	@Override
+	public void focusGained(FocusEvent e) {}
+
+	@Override
+	public void focusLost(FocusEvent e) {}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(createItem.getActionCommand())) {
+			// Craft button clicked
+			if (!name.getText().isEmpty()) {
+				fillItem();
+			} else {
+				// name field is empty
+				JOptionPane.showMessageDialog(ItemBuilder.getInstance().getIBFrame(), "Give your item a name.");
+			}
+		} else if (e.getActionCommand().equals(insertItem.getActionCommand())) {
+			if (item.getEntry() != 0) {
+				final JOptionPane optionPane = new JOptionPane(
+		                "Insert item into Database?",
+		                JOptionPane.QUESTION_MESSAGE,
+		                JOptionPane.YES_NO_OPTION);
+	
+				final JDialog dialog = new JDialog(ItemBuilder.getInstance().getIBFrame(), 
+				                             "Database Confirmation",
+				                             true);
+				dialog.setContentPane(optionPane);
+				
+				dialog.setLocation(dialog.getParent().getX()+650, dialog.getParent().getY()+350);
+				optionPane.addPropertyChangeListener(
+				    new PropertyChangeListener() {
+				        public void propertyChange(PropertyChangeEvent e) {
+				            String prop = e.getPropertyName();
+		
+				            if (dialog.isVisible() 
+				             && (e.getSource() == optionPane)
+				             && (prop.equals(JOptionPane.VALUE_PROPERTY))) {
+				                //If you were going to check something
+				                //before closing the window, you'd do
+				                //it here.
+				                dialog.setVisible(false);
+				            }
+				        }
+				    });
+				dialog.pack();
+				dialog.setVisible(true);
+		
+				int value;
+				try {
+					value = ((Integer)optionPane.getValue()).intValue();
+				} catch(Exception e2) {
+					// closed the window
+					value = JOptionPane.NO_OPTION;
+				}
+				if (value == JOptionPane.YES_OPTION) {
+					System.out.println("Inserting Item into DB.");
+					try {
+						db.insertItemIntoTemplate(item);
+						int nextEntry = item.getEntry() + 1;
+						SettingsPanel.getInstance().setNextEntryID(String.valueOf(nextEntry));
+					} catch (Exception e1) {
+						System.err.println("Failed to insert item into db.");
+						e1.printStackTrace();
+					}
+				} else if (value == JOptionPane.NO_OPTION) {
+				    System.out.println("Not inserting item into DB.");
+				}
+			} else {
+				// entry == 0
+				// No item to insert
+				JOptionPane.showMessageDialog(ItemBuilder.getInstance().getIBFrame(), "You must craft an item first.");
+			}
+		}
+	}
+    
+    @Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			createItem.doClick();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+	
+	@Override
+	public void keyTyped(KeyEvent e) {}
+	
+	
 }

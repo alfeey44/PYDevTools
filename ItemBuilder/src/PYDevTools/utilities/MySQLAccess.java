@@ -1,14 +1,11 @@
 package PYDevTools.utilities;
 
-import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 
 import PYDevTools.db.structures.Item;
 import PYDevTools.view.SettingsPanel;
@@ -35,7 +32,7 @@ public class MySQLAccess {
 			connectToDB();
 			// resultSet gets the result of the SQL query
 			resultSet = statement
-					.executeQuery("SELECT * FROM world.item_template WHERE"
+					.executeQuery("SELECT * FROM " + dbname + ".item_template WHERE"
 							+ " `name` LIKE '%" + s + "%'"
 							+ " OR `entry` LIKE '%" + s + "%';");
 			while (resultSet.next()) {
@@ -69,6 +66,7 @@ public class MySQLAccess {
 			item.setIlvl(resultSet.getInt("ItemLevel"));
 			item.setReqlvl(resultSet.getInt("RequiredLevel"));
 			item.setUnique(resultSet.getInt("maxcount"));
+			item.setStackable(resultSet.getInt("stackable"));
 			item.setStatsCount(resultSet.getInt("StatsCount"));
 			for (int i = 0; i < 10; i++) {
 				item.setStat_type(i, resultSet.getInt("stat_type" + (i + 1)));
@@ -124,7 +122,11 @@ public class MySQLAccess {
 			item.setDamageType2(resultSet.getInt("dmg_type2"));
 			item.setAmmoType(resultSet.getInt("ammo_type"));
 			item.setRangedModRange(resultSet.getInt("RangedModRange"));
-			item.setSpell_charge(0, resultSet.getInt("spellcharges_1"));
+			try {
+				item.setSpell_charge(0, resultSet.getInt("spellcharges_1"));
+			} catch(NullPointerException ne) {
+				item.setSpell_charge(0, -1);
+			}
 			item.setSpell_charge(1, resultSet.getInt("spellcharges_2"));
 			item.setSpell_charge(2, resultSet.getInt("spellcharges_3"));
 			item.setSpell_charge(3, resultSet.getInt("spellcharges_4"));
@@ -212,7 +214,7 @@ public class MySQLAccess {
 							+ item.getSubclass()
 							+ ", "
 							+ item.getSoundOverrideSubclass()
-							+ ", ' "
+							+ ", '"
 							+ item.getName()
 							+ "', "
 							+ item.getDisplay()
@@ -525,7 +527,7 @@ public class MySQLAccess {
 			if (connect != null)
 				connect.close();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 	}
 
@@ -540,7 +542,6 @@ public class MySQLAccess {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// setup the connection with the DB.
-			
 			connect = DriverManager.getConnection("jdbc:mysql://" + host + "/"
 					+ dbname + "?" + "user=" + username + "&password="
 					+ password);

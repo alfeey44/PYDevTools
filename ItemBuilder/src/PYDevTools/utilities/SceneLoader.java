@@ -3,8 +3,6 @@
  */
 package PYDevTools.utilities;
 
-import java.io.FileReader;
-import java.io.IOException;
 //import com.sun.j3d.loaders.Scene;
 //import com.sun.j3d.loaders.objectfile.ObjectFile;
 

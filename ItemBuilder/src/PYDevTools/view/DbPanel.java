@@ -3,10 +3,8 @@
  */
 package PYDevTools.view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,24 +15,31 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
 
 import PYDevTools.db.structures.Item;
+import PYDevTools.enums.ItemType;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemToolTip;
 import PYDevTools.utilities.MySQLAccess;
-import PYDevTools.enums.ItemType;
 
 /**
  * @author alfeey44
@@ -47,7 +52,7 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 	private HashMap<Item, ItemToolTip> items;
 	private ItemToolTip currentTT;
 	private ImageDrawingComponent currentIcon;
-	private JLabel searchBarLabel, itemNotFoundLabel;
+	private JLabel searchBarLabel, itemSearchStatusLabel;
 	private JTextField searchBar;
 	private JButton search;
 	
@@ -60,6 +65,7 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 	private SpringLayout leftLayout;
 	
 	private MySQLAccess db = new MySQLAccess();
+	private Thread dbThread;
 	
 	@SuppressWarnings("serial")
 	public DbPanel() {
@@ -100,13 +106,13 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 		searchCons.setY(Spring.constant(17));
 		leftPanel.add(search);
 		
-		itemNotFoundLabel = new JLabel("No items found");
-		itemNotFoundLabel.setForeground(Color.red);
-		itemNotFoundLabel.setVisible(false);
-		SpringLayout.Constraints itemNotFoundLabelCons = leftLayout.getConstraints(itemNotFoundLabel);
-		itemNotFoundLabelCons.setX(Spring.constant(250));
-		itemNotFoundLabelCons.setY(Spring.constant(40));
-		leftPanel.add(itemNotFoundLabel);
+		itemSearchStatusLabel = new JLabel("No items found");
+		itemSearchStatusLabel.setForeground(Color.red);
+		itemSearchStatusLabel.setVisible(false);
+		SpringLayout.Constraints itemSearchStatusLabelCons = leftLayout.getConstraints(itemSearchStatusLabel);
+		itemSearchStatusLabelCons.setX(Spring.constant(190));
+		itemSearchStatusLabelCons.setY(Spring.constant(50));
+		leftPanel.add(itemSearchStatusLabel);
 		
 		// Table
 		columnNames = new Vector<String>();
@@ -135,25 +141,30 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 				
 				Iterator<Map.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
 				while(iterator.hasNext()){
-				   Map.Entry<Item, ItemToolTip> entry = iterator.next();
-				   if (entry.getKey().getEntry() == selectedEntry) {
-					   rightPanel.remove(currentTT);
-					   currentTT = entry.getValue();
-					   SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(currentTT);
-					   toolTipCons.setX(Spring.constant(150));
-					   toolTipCons.setY(Spring.constant(50));
-					   rightPanel.add(currentTT);
+				   try {
+					   Map.Entry<Item, ItemToolTip> entry = iterator.next();
 					   
-					   rightPanel.setPreferredSize(new Dimension(550, currentTT.getToolTipHeight()+125));
-					   
-					   currentIcon.setImage("src/icons/WoWIcons/" + currentTT.getIconPath() + ".png");
-					   currentIcon.resize(80, 80);
-					   currentIcon.repaint();
-					   
-					   repaint();
-					   revalidate();
-				   } else {
-					   
+					   if (entry.getKey().getEntry() == selectedEntry) {
+						   rightPanel.remove(currentTT);
+						   currentTT = entry.getValue();
+						   SpringLayout.Constraints toolTipCons = rightLayout.getConstraints(currentTT);
+						   toolTipCons.setX(Spring.constant(150));
+						   toolTipCons.setY(Spring.constant(50));
+						   rightPanel.add(currentTT);
+						   
+						   rightPanel.setPreferredSize(new Dimension(550, currentTT.getToolTipHeight()+125));
+						   
+						   currentIcon.setImage("src/icons/WoWIcons/" + currentTT.getIconPath() + ".png");
+						   currentIcon.resize(80, 80);
+						   currentIcon.repaint();
+						   
+						   repaint();
+						   revalidate();
+					   } else {
+						   
+					   }
+				   } catch(ConcurrentModificationException cme) {
+					   // Dont do anything, you cant edit the table anyway
 				   }
 				}
 			}
@@ -233,22 +244,29 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 		add(mainPane);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Search")) {
-			// Remove current list of items
-			Iterator<Map.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
-			while(iterator.hasNext()){
-			   Map.Entry<Item, ItemToolTip> entry = iterator.next();
-			   remove(entry.getValue());
-			   iterator.remove(); // right way to remove entries from Map, 
-			}
-			tableData.removeAllElements();
-			if (!searchBar.getText().equals("")) {
+	private void clearItemTable() {
+		Iterator<Map.Entry<Item, ItemToolTip>> iterator = items.entrySet().iterator();
+		while(iterator.hasNext()){
+		   Map.Entry<Item, ItemToolTip> entry = iterator.next();
+		   remove(entry.getValue());
+		   iterator.remove(); // right way to remove entries from Map, 
+		}
+		tableData.removeAllElements();
+	}
+	
+	private void fillItemTableFromSearchBarText() {
+		itemSearchStatusLabel.setText("Querying Database...");
+		itemSearchStatusLabel.setForeground(Color.blue);
+		itemSearchStatusLabel.setVisible(true);
+		
+		dbThread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				search.setEnabled(false);
 				try {
 					ArrayList<Item> dbItems = db.getItemFromTemplate(searchBar.getText());
 					if (dbItems != null) {
-						itemNotFoundLabel.setVisible(false);
 						for (int i = 0; i < dbItems.size(); i++) {
 							ItemToolTip toolTip = new ItemToolTip(dbItems.get(i));
 							items.put(dbItems.get(i), toolTip);
@@ -260,6 +278,8 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 							
 							tableData.add(row);
 						}
+						// get rid of status message
+						itemSearchStatusLabel.setVisible(false);
 						// Needed to repaint the panel
 						tableScrollPane.getViewport().revalidate();
 						tableScrollPane.getViewport().repaint();
@@ -267,19 +287,36 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 						revalidate();
 					} else {
 						// Item not found
-						itemNotFoundLabel.setVisible(true);
+						itemSearchStatusLabel.setText("No items found");
+						itemSearchStatusLabel.setForeground(Color.red);
+						itemSearchStatusLabel.setVisible(true);
 						// used when removing component
 						repaint();
 						// used when adding component
 						revalidate();
 					}
 				} catch (Exception exeption) {
-					//exeption.printStackTrace();
+					exeption.printStackTrace();
 					System.out.println("Item not found with given entry.");
 				}
+				search.setEnabled(true);
+			}
+		});
+		
+		dbThread.start();
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("Search")) {
+			// Remove current list of items
+			clearItemTable();
+			if (!searchBar.getText().equals("")) {
+				fillItemTableFromSearchBarText();
 			} else {
 				// searchbar is empty
-				itemNotFoundLabel.setVisible(false);
+				itemSearchStatusLabel.setVisible(false);
+				clearItemTable();
 				repaint();
 				revalidate();
 			}

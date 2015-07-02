@@ -40,7 +40,7 @@ public class SpellFinder {
 				processFileForSpellIcons();
 				processFileForSpellIconIds();
 				processFileForSpellDescriptions();
-				System.out.println("Done loading files.");
+				System.out.println("Done loading spell files.");
 			}
 		});
 

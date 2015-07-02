@@ -3,5 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="library/mysql-connector-java-5.1.31-bin.jar"/>
+	<classpathentry kind="lib" path="library/JTattoo-1.6.11.jar"/>
+	<classpathentry kind="lib" path="library/weblaf-complete-1.28.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

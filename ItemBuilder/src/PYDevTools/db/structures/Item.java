@@ -1,6 +1,5 @@
 package PYDevTools.db.structures;
 
-import PYDevTools.enums.ItemBonding;
 import PYDevTools.enums.ItemType;
 
 public class Item {
@@ -48,6 +47,7 @@ public class Item {
 		reqlvl = 0;
 		ilvl = 0;
 		unique = 0;
+		stackable = 1;
 		statsCount = 0;
 		stat_types = new int[10];
 		stat_values = new int[10];
@@ -64,6 +64,10 @@ public class Item {
 		arcane_resist = 0;
 		
 		spell_ids = new int[5];
+		spell_charges = new int[5];
+		spell_ppm_rate = new int[5];
+		spell_categories = new int[5];
+		spell_category_cds = new int[5];
 		spell_triggers = new int[5];
 		spell_cds = new int[5];
 		for (int i = 0; i < 5; i++) {
@@ -80,6 +84,8 @@ public class Item {
 		}
 		
 		duribility = 0;
+		soundOverrideSubclass = -1;
+		scriptName = "";
 	}
 
 	////////////////////////////////
@@ -914,5 +920,6 @@ public class Item {
 			return ItemType.misc;
 		}
 	}
+	
 	
 }

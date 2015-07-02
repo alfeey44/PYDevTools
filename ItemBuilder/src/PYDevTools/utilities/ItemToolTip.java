@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 
 import PYDevTools.db.structures.Item;
+import PYDevTools.enums.ItemType;
 
 @SuppressWarnings("serial")
 public class ItemToolTip extends ImageDrawingComponent {
@@ -19,7 +20,7 @@ public class ItemToolTip extends ImageDrawingComponent {
 			"Required Level", "Sell Price" };
 	private JLabel TTname, TTilvl, TTbinds, TTunique, TTequip, TTsubclass, TTmindamage, TTmaxdamage, TTdelay,
 	   TTDPS, TTsocket1, TTsocket2, TTsocket3, TTsocketbonus, TTduribility, TTreqclass, TTreqrace, 
-	   TTreqlvl, TTset, TTsellprice;
+	   TTreqlvl, TTset, TTsellprice, TTarmor, TTblock;
 	private ArrayList<JLabel> TTdesc = new ArrayList<JLabel>();
 	private JLabel[] TTstats = new JLabel[10];
 	private JLabel[] TTresists = new JLabel[6];
@@ -82,6 +83,16 @@ public class ItemToolTip extends ImageDrawingComponent {
 		TTDPS.setForeground(Color.WHITE);
 		TTDPS.setLocation(10, 0);
 		add(TTDPS);
+		
+		TTarmor = new JLabel("", JLabel.TRAILING);
+		TTarmor.setForeground(Color.WHITE);
+		TTarmor.setLocation(10, 0);
+		add(TTarmor);
+		
+		TTblock = new JLabel("", JLabel.TRAILING);
+		TTblock.setForeground(Color.WHITE);
+		TTblock.setLocation(10, 0);
+		add(TTblock);
 		
 		for (int i = 0; i < 10; i++) {
 			TTstats[i] = new JLabel("", JLabel.TRAILING);
@@ -233,8 +244,94 @@ public class ItemToolTip extends ImageDrawingComponent {
 		}
 		
 		switch (item.getInventoryType()) {
+		case 1:
+			TTequip.setText("Head");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 2:
+			TTequip.setText("Neck");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 3:
+			TTequip.setText("Shoulder");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 4:
+			TTequip.setText("Shirt");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 5:
+			TTequip.setText("Chest");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 6:
+			TTequip.setText("Waist");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 7:
+			TTequip.setText("Legs");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 8:
+			TTequip.setText("Feet");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 9:
+			TTequip.setText("Wrists");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 10:
+			TTequip.setText("Hands");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 11:
+			TTequip.setText("Finger");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 12:
+			TTequip.setText("Trinket");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
 		case 13:
 			TTequip.setText("One-Hand");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 14:
+			//TTequip.setText("Shield");
+			TTequip.setText("Off-Hand");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 16:
+			TTequip.setText("Back");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 18:
+			TTequip.setText("Bag");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 19:
+			TTequip.setText("Tabard");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 20:
+			TTequip.setText("Robe");
 			incrementLines();
 			TTequip.setLocation(10, toolTipHeight);
 			break;
@@ -245,6 +342,16 @@ public class ItemToolTip extends ImageDrawingComponent {
 			break;
 		case 22:
 			TTequip.setText("Off-Hand");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 23:
+			TTequip.setText("Tome");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 24:
+			TTequip.setText("Ammo");
 			incrementLines();
 			TTequip.setLocation(10, toolTipHeight);
 			break;
@@ -264,8 +371,13 @@ public class ItemToolTip extends ImageDrawingComponent {
 			incrementLines();
 			TTequip.setLocation(10, toolTipHeight);
 			break;
-		case 14:
-			TTequip.setText("Shield");
+		case 27:
+			TTequip.setText("Quiver");
+			incrementLines();
+			TTequip.setLocation(10, toolTipHeight);
+			break;
+		case 28:
+			TTequip.setText("Relic");
 			incrementLines();
 			TTequip.setLocation(10, toolTipHeight);
 			break;
@@ -274,69 +386,117 @@ public class ItemToolTip extends ImageDrawingComponent {
 			break;
 		}
 		
-		switch (item.getSubclass()) {
-		case 0:
-		case 1:
-			TTsubclass.setText("Axe");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 2:
-			TTsubclass.setText("Bow");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 3:
-			TTsubclass.setText("Gun");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 4:
-		case 5:
-			TTsubclass.setText("Mace");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 6:
-			TTsubclass.setText("Polearm");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 7:
-		case 8:
-			TTsubclass.setText("Sword");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 10:
-			TTsubclass.setText("Staff");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 13:
-			TTsubclass.setText("Fist");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 15:
-			TTsubclass.setText("Dagger");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 16:
-			TTsubclass.setText("Throwing");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 17:
-			TTsubclass.setText("Spear");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 18:
-			TTsubclass.setText("Crossbow");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		case 19:
-			TTsubclass.setText("Wand");
-			TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
-			break;
-		default:
-			TTsubclass.setText("");
-			break;
+		if (item.getItemType() == ItemType.armor) {
+			switch (item.getSubclass()) {
+			case 0:
+				TTsubclass.setText("");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 1:
+				TTsubclass.setText("Cloth");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 2:
+				TTsubclass.setText("Leather");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 3:
+				TTsubclass.setText("Mail");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 4:
+				TTsubclass.setText("Plate");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 6:
+				TTsubclass.setText("Shield");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 7:
+				TTsubclass.setText("Libram");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 8:
+				TTsubclass.setText("Idol");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 9:
+				TTsubclass.setText("Totem");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 10:
+				TTsubclass.setText("Sigil");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			default:
+				TTsubclass.setText("");
+				break;
+			}
+		} else if (item.getItemType() == ItemType.weapon) {
+			switch (item.getSubclass()) {
+			case 0:
+			case 1:
+				TTsubclass.setText("Axe");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 2:
+				TTsubclass.setText("Bow");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 3:
+				TTsubclass.setText("Gun");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 4:
+			case 5:
+				TTsubclass.setText("Mace");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 6:
+				TTsubclass.setText("Polearm");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 7:
+			case 8:
+				TTsubclass.setText("Sword");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 10:
+				TTsubclass.setText("Staff");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 13:
+				TTsubclass.setText("Fist");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 15:
+				TTsubclass.setText("Dagger");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 16:
+				TTsubclass.setText("Throwing");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 17:
+				TTsubclass.setText("Spear");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 18:
+				TTsubclass.setText("Crossbow");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			case 19:
+				TTsubclass.setText("Wand");
+				TTsubclass.setLocation(((toolTipWidth-10)-(TTsubclass.getText().length()*15)), toolTipHeight);
+				break;
+			default:
+				TTsubclass.setText("");
+				break;
+			}
 		}
 		
 		// If its a weapon
-		if (item.getClass_() == 2) {
+		if (item.getItemType() == ItemType.weapon) {
 			if (item.getMinDamage() != 0) {
 				incrementLines();
 				TTmindamage.setText(String.valueOf(item.getMinDamage()));
@@ -358,21 +518,33 @@ public class ItemToolTip extends ImageDrawingComponent {
 			}
 		}
 		
+		if (item.getArmor() != 0) {
+			incrementLines();
+			TTarmor.setText(String.valueOf(item.getArmor()) + " Armor");
+			TTarmor.setLocation(10, toolTipHeight);
+		}
+		
+		if (item.getBlock() != 0) {
+			incrementLines();
+			TTblock.setText(String.valueOf(item.getBlock()) + " Block");
+			TTblock.setLocation(10, toolTipHeight);
+		}
+		
 		for (int i = 0; i < 10; i++) {
 			String statText = "";
     		// initialize true because their are less normal stats
     		boolean isEquipStat = true;
 			switch(item.getStat_type(i)) {
+			case 3: //agility
+    			statText = " Agility";
+    			isEquipStat = false;
+    			break;
     		case 7: //stamina
     			statText = " Stamina";
     			isEquipStat = false;
     			break;
     		case 4: //strength
     			statText = " Strength";
-    			isEquipStat = false;
-    			break;
-    		case 3: //agility
-    			statText = " Agility";
     			isEquipStat = false;
     			break;
 			case 5: //intellect

@@ -3,10 +3,7 @@
  */
 package PYDevTools.view;
 
-import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-
-import javax.swing.*;
+import javax.swing.JPanel;
 
 import PYDevTools.utilities.MySQLAccess;
 

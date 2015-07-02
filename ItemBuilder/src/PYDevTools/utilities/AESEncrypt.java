@@ -1,12 +1,12 @@
 package PYDevTools.utilities;
 
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
+import java.security.Key;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import sun.misc.*;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 public class AESEncrypt {
     
