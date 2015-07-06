@@ -33,6 +33,7 @@ import javax.swing.SpringLayout;
 
 import PYDevTools.Spring.SpringUtilities;
 import PYDevTools.db.structures.Item;
+import PYDevTools.enums.ItemInventoryType;
 import PYDevTools.utilities.ImageDrawingComponent;
 import PYDevTools.utilities.ItemIconFinder;
 import PYDevTools.utilities.ItemToolTip;
@@ -55,13 +56,13 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 	private JButton createItem, insertItem;
 	private ImageIcon anvilImageIcon;
 	private ImageDrawingComponent itemIcon, itemToolTip;
-	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ", 
-								"Binds: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
+	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Subclass: ", 
+								"Binds: ", "Armor: ", "Block: ", "Duribility: ", "Required Level: ","Item Level: ", "Unique: ", "Role: ",
 								"Stats: ", "Resists: ", "Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ",
 								"Spell 3: ", "Spell 3 Trigger: ", "Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", 
 								"Sockets: " };
 	private int numLabels = labels.length;
-	private JTextField name, desc, display, armor, block, reqlvl, 
+	private JTextField name, desc, display, armor, block, reqlvl, duribility, 
 					   ilvl, unique, spell1, spell2, spell3, spell4, spell5, socket;
 	private JComboBox<String> quality, equip, subclass, bind, role, spelltrigger1, spelltrigger2,
 	   						  spelltrigger3, spelltrigger4, spelltrigger5;
@@ -70,9 +71,15 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 								"Hit Rating", "Crit Rating", "Haste Rating", "Armor Penetration", "Spell Penetration", 
 								"Expertise", "Defense", "Dodge", "Parry", "Block", "Resilience", };
 	private String[] qualities = { "Gray", "White", "Green", "Blue", "Purple", "Orange", "Heirloom" };
-	private String[] equips = { "One Handed", "Main Handed", "Off Handed", "Two Handed", "Bow", "Gun", "Thrown", "CrossBow", "Wand" };
-	private String[] subclasses = { "1H Axe", "2H Axe", "Bow", "Gun", "1H Mace", "2H Mace", "Polearm", "1H Sword", "2H Sword",
-								"Staff", "Fist", "Dagger", "Throwing", "Spear", "Crossbow", "Wand" };
+	private String[] equips = { "Head", "Neck", "Shoulder", "Cloak", "Shirt", "Tabard", "Chest", "Waist", "Legs", "Feet",
+								"Wrists", "Hands", "Finger", "Trinket", "Shield",  "Relic"};
+	private String[] mainEquips = { "Head", "Shoulder", "Chest", "Wrists", "Hands", "Waist", "Legs", "Feet" };
+	private String[] miscEquips = { "Neck", "Ring", "Trinket", "Shirt", "Tabard" };
+	private String[] clothEquips = { "Head", "Shoulder", "Cloak", "Chest", "Wrists", "Hands", "Waist", "Legs", "Feet" };
+	private String[] shieldEquip = { "Shield" };
+	private String[] relicEquip = { "Relic" };
+	private String[] subclasses = { "Miscellaneous", "Cloth", "Leather", "Mail", "Plate", "Shield", "Libram", "Idol",
+									"Totem", "Sigil" };
 	private String[] binds = { "None", "On Pick Up", "On Equip", "On Use" };
 	private String[] roles = { "DPS", "Tank", "Healer" };
 	private String[] resists = { "Fire", "Frost", "Shadow", "Holy", "Nature", "Arcane" };
@@ -80,7 +87,7 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 	private JList<String> selectedResists;
 	private JLabel invalidDisplayId;
 	private Font italicFont = new Font("Arial", Font.ITALIC, 14);
-	SpringLayout rightLayout;
+	private SpringLayout rightLayout;
 	
 	private ItemIconFinder iconFinder = ItemIconFinder.getInstance();
 	private SpellFinder spellFinder = SpellFinder.getInstance();
@@ -138,16 +145,18 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 					leftPanel.add(quality);
 					break;
 				case 4:
-					equip = new JComboBox<String>(equips);
+					subclass = new JComboBox<String>(subclasses);
+					subclass.setSelectedIndex(0);
+					subclass.addActionListener(this);
+					subclass.setActionCommand("subclass");
+					l.setLabelFor(subclass);
+					leftPanel.add(subclass);
+					break;
+				case 5:
+					equip = new JComboBox<String>(miscEquips);
 					equip.setSelectedIndex(0);
 					l.setLabelFor(equip);
 					leftPanel.add(equip);
-					break;
-				case 5:
-					subclass = new JComboBox<String>(subclasses);
-					subclass.setSelectedIndex(0);
-					l.setLabelFor(subclass);
-					leftPanel.add(subclass);
 					break;
 				case 6:
 					bind = new JComboBox<String>(binds);
@@ -155,101 +164,119 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 					l.setLabelFor(bind);
 					leftPanel.add(bind);
 					break;
-				case 7:
+				case 7: 
+					armor = new JTextField(15);
+					armor.addKeyListener(this);
+					l.setLabelFor(armor);
+					leftPanel.add(armor);
+					break;
+				case 8: 
+					block = new JTextField(15);
+					block.addKeyListener(this);
+					l.setLabelFor(block);
+					leftPanel.add(block);
+					break;
+				case 9:
+					duribility = new JTextField(15);
+					duribility.addKeyListener(this);
+					l.setLabelFor(duribility);
+					leftPanel.add(duribility);
+					break;
+				case 10:
 					reqlvl = new JTextField(15);
 					reqlvl.addKeyListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
-				case 8:
+				case 11:
 					ilvl = new JTextField(15);
 					ilvl.addKeyListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
-				case 9:
+				case 12:
 					unique = new JTextField(15);
 					unique.addKeyListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
-				case 10:
+				case 13:
 					role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
 					l.setLabelFor(role);
 					leftPanel.add(role);
 					break;
-				case 11:
+				case 14:
 					selectedStats = new JList<String>(stats);
 					l.setLabelFor(selectedStats);
 					leftPanel.add(selectedStats);
 					break;
-				case 12:
+				case 15:
 					selectedResists = new JList<String>(resists);
 					l.setLabelFor(selectedResists);
 					leftPanel.add(selectedResists);
 					break;
-				case 13:
+				case 16:
 					spell1 = new JTextField(15);
 					spell1.addKeyListener(this);
 					l.setLabelFor(spell1);
 					leftPanel.add(spell1);
 					break;
-				case 14:
+				case 17:
 					spelltrigger1 = new JComboBox<String>(spelltriggers);
 					spelltrigger1.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger1);
 					leftPanel.add(spelltrigger1);
 					break;
-				case 15:
+				case 18:
 					spell2 = new JTextField(15);
 					spell2.addKeyListener(this);
 					l.setLabelFor(spell2);
 					leftPanel.add(spell2);
 					break;
-				case 16:
+				case 19:
 					spelltrigger2 = new JComboBox<String>(spelltriggers);
 					spelltrigger2.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger2);
 					leftPanel.add(spelltrigger2);
 					break;
-				case 17:
+				case 20:
 					spell3 = new JTextField(15);
 					spell3.addKeyListener(this);
 					l.setLabelFor(spell3);
 					leftPanel.add(spell3);
 					break;
-				case 18:
+				case 21:
 					spelltrigger3 = new JComboBox<String>(spelltriggers);
 					spelltrigger3.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger3);
 					leftPanel.add(spelltrigger3);
 					break;
-				case 19:
+				case 22:
 					spell4 = new JTextField(15);
 					spell4.addKeyListener(this);
 					l.setLabelFor(spell4);
 					leftPanel.add(spell4);
 					break;
-				case 20:
+				case 23:
 					spelltrigger4 = new JComboBox<String>(spelltriggers);
 					spelltrigger4.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger4);
 					leftPanel.add(spelltrigger4);
 					break;
-				case 21:
+				case 24:
 					spell5 = new JTextField(15);
 					spell5.addKeyListener(this);
 					l.setLabelFor(spell5);
 					leftPanel.add(spell5);
 					break;
-				case 22:
+				case 25:
 					spelltrigger5 = new JComboBox<String>(spelltriggers);
 					spelltrigger5.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger5);
 					leftPanel.add(spelltrigger5);
 					break;
-				case 23:
+				case 26:
 					socket = new JTextField(15);
 					socket.addKeyListener(this);
 					l.setLabelFor(socket);
@@ -344,7 +371,7 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     	}
     	item.setEntry(entry);
     	
-    	// Crafting a armor
+    	// Crafting armor
     	item.setClass_(4);
     	
     	////////////////////////
@@ -396,112 +423,247 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 		
     	item.setQuality(quality.getSelectedIndex());
     	
-    	switch (equip.getSelectedIndex()) {
-    	case 0:
-    		// One Handed
-    		item.setInventoryType(13);
-    		break;
-    	case 1:
-    		// Main Handed
-    		item.setInventoryType(21);
-    		break;
-    	case 2:
-    		// Off Handed
-    		item.setInventoryType(22);
-    		break;
-    	case 3:
-    		// Two Handed
-    		item.setInventoryType(17);
-    		break;
-    	case 4:
-    		// Bow
-    		item.setInventoryType(15);
-    		break;
-    	case 5:
-    		// Gun
-    		item.setInventoryType(26);
-    		break;
-    	case 6:
-    		// Thrown
-    		item.setInventoryType(25);
-    		break;
-    	case 7:
-    		// Crossbow
-    		item.setInventoryType(15);
-    		break;
-    	case 8:
-    		// Wands
-    		item.setInventoryType(26);
-    		break;
-    	}
     	switch(subclass.getSelectedIndex()) {
     	case 0:
-    		// 1H axe
+    		// misc
     		item.setSubclass(0);
+    		
+    		switch (equip.getSelectedIndex()) {
+			case 0:
+				//neck
+				item.setInventoryType(ItemInventoryType.neck.ordinal());
+				break;
+			case 1:
+				//ring
+				item.setInventoryType(ItemInventoryType.finger.ordinal());
+				break;
+			case 2:
+				//trinket
+				item.setInventoryType(ItemInventoryType.trinket.ordinal());
+				break;
+			case 3:
+				//shirt
+				item.setInventoryType(ItemInventoryType.shirt.ordinal());
+				break;
+			case 4:
+				//tabard
+				item.setInventoryType(ItemInventoryType.tabard.ordinal());
+				break;
+			default:
+				break;
+			}
+    		
     		break;
     	case 1:
-    		// 2H axe
+    		// cloth
     		item.setSubclass(1);
+    		
+    		switch (equip.getSelectedIndex()) {
+			case 0:
+				//head
+				item.setInventoryType(ItemInventoryType.head.ordinal());
+				break;
+			case 1:
+				//shoulder
+				item.setInventoryType(ItemInventoryType.shoulder.ordinal());
+				break;
+			case 2:
+				//cloak
+				item.setInventoryType(ItemInventoryType.back.ordinal());
+				break;
+			case 3:
+				//chest
+				item.setInventoryType(ItemInventoryType.chest.ordinal());
+				break;
+			case 4:
+				//wrists
+				item.setInventoryType(ItemInventoryType.wrists.ordinal());
+				break;
+			case 5:
+				//hands
+				item.setInventoryType(ItemInventoryType.hands.ordinal());
+				break;
+			case 6:
+				//waist
+				item.setInventoryType(ItemInventoryType.waist.ordinal());
+				break;
+			case 7:
+				//legs
+				item.setInventoryType(ItemInventoryType.legs.ordinal());
+				break;
+			case 8:
+				//feet
+				item.setInventoryType(ItemInventoryType.feet.ordinal());
+				break;
+			default:
+				break;
+			}
+    		
     		break;
     	case 2:
-    		// Bow
+    		// leather
     		item.setSubclass(2);
+    		
+    		switch (equip.getSelectedIndex()) {
+			case 0:
+				//head
+				item.setInventoryType(ItemInventoryType.head.ordinal());
+				break;
+			case 1:
+				//shoulder
+				item.setInventoryType(ItemInventoryType.shoulder.ordinal());
+				break;
+			case 2:
+				//chest
+				item.setInventoryType(ItemInventoryType.chest.ordinal());
+				break;
+			case 3:
+				//wrists
+				item.setInventoryType(ItemInventoryType.wrists.ordinal());
+				break;
+			case 4:
+				//hands
+				item.setInventoryType(ItemInventoryType.hands.ordinal());
+				break;
+			case 5:
+				//waist
+				item.setInventoryType(ItemInventoryType.waist.ordinal());
+				break;
+			case 6:
+				//legs
+				item.setInventoryType(ItemInventoryType.legs.ordinal());
+				break;
+			case 7:
+				//feet
+				item.setInventoryType(ItemInventoryType.feet.ordinal());
+				break;
+			default:
+				break;
+			}
+    		
     		break;
     	case 3:
-    		// Gun
+    		// mail
     		item.setSubclass(3);
+    		
+    		switch (equip.getSelectedIndex()) {
+			case 0:
+				//head
+				item.setInventoryType(ItemInventoryType.head.ordinal());
+				break;
+			case 1:
+				//shoulder
+				item.setInventoryType(ItemInventoryType.shoulder.ordinal());
+				break;
+			case 2:
+				//chest
+				item.setInventoryType(ItemInventoryType.chest.ordinal());
+				break;
+			case 3:
+				//wrists
+				item.setInventoryType(ItemInventoryType.wrists.ordinal());
+				break;
+			case 4:
+				//hands
+				item.setInventoryType(ItemInventoryType.hands.ordinal());
+				break;
+			case 5:
+				//waist
+				item.setInventoryType(ItemInventoryType.waist.ordinal());
+				break;
+			case 6:
+				//legs
+				item.setInventoryType(ItemInventoryType.legs.ordinal());
+				break;
+			case 7:
+				//feet
+				item.setInventoryType(ItemInventoryType.feet.ordinal());
+				break;
+			default:
+				break;
+			}
+    		
     		break;
     	case 4:
-    		// 1H mace
+    		// plate
     		item.setSubclass(4);
+    		
+    		switch (equip.getSelectedIndex()) {
+			case 0:
+				//head
+				item.setInventoryType(ItemInventoryType.head.ordinal());
+				break;
+			case 1:
+				//shoulder
+				item.setInventoryType(ItemInventoryType.shoulder.ordinal());
+				break;
+			case 2:
+				//chest
+				item.setInventoryType(ItemInventoryType.chest.ordinal());
+				break;
+			case 3:
+				//wrists
+				item.setInventoryType(ItemInventoryType.wrists.ordinal());
+				break;
+			case 4:
+				//hands
+				item.setInventoryType(ItemInventoryType.hands.ordinal());
+				break;
+			case 5:
+				//waist
+				item.setInventoryType(ItemInventoryType.waist.ordinal());
+				break;
+			case 6:
+				//legs
+				item.setInventoryType(ItemInventoryType.legs.ordinal());
+				break;
+			case 7:
+				//feet
+				item.setInventoryType(ItemInventoryType.feet.ordinal());
+				break;
+			default:
+				break;
+			}
+    		
     		break;
     	case 5:
-    		// 2H mace
-    		item.setSubclass(5);
+    		// shield
+    		item.setSubclass(6);
+    		item.setInventoryType(ItemInventoryType.shield.ordinal());
     		break;
     	case 6:
-    		// Polearm
-    		item.setSubclass(6);
+    		// libram
+    		item.setSubclass(7);
+    		item.setInventoryType(ItemInventoryType.relic.ordinal());
     		break;
     	case 7:
-    		// 1H sword
-    		item.setSubclass(7);
+    		// idol
+    		item.setSubclass(8);
+    		item.setInventoryType(ItemInventoryType.relic.ordinal());
     		break;
     	case 8:
-    		// 2H sword
-    		item.setSubclass(8);
+    		// totem
+    		item.setSubclass(9);
+    		item.setInventoryType(ItemInventoryType.relic.ordinal());
     		break;
     	case 9:
-    		// Staff
+    		// sigil
     		item.setSubclass(10);
+    		item.setInventoryType(ItemInventoryType.relic.ordinal());
     		break;
-    	case 10:
-    		// Fist
-    		item.setSubclass(13);
-    		break;
-    	case 11:
-    		// Dagger
-    		item.setSubclass(15);
-    		break;
-    	case 12:
-    		// Thrown
-    		item.setSubclass(16);
-    		break;
-    	case 13:
-    		// Spear
-    		item.setSubclass(17);
-    		break;
-    	case 14:
-    		// Crossbow
-    		item.setSubclass(18);
-    		break;
-    	case 15:
-    		// Wand
-    		item.setSubclass(19);
+    	default:
+    		System.err.println("Unknown subclass clicked");
     		break;
     	}
     	
     	item.setBinds(bind.getSelectedIndex());
+    	
+    	if (!armor.getText().isEmpty())
+    		item.setArmor(Integer.parseInt(armor.getText()));
+    	if (!block.getText().isEmpty())
+    		item.setBlock(Integer.parseInt(block.getText()));
+    	if (!duribility.getText().isEmpty())
+    		item.setDuribility(Integer.parseInt(duribility.getText()));
     	
     	// Stats
     	int statsToCalc[] = selectedStats.getSelectedIndices();
@@ -810,86 +972,205 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     	display.setText(Integer.toString(item.getDisplay()));
     	quality.setSelectedIndex(item.getQuality());
     	
-    	switch (item.getInventoryType()) {
-    	case 13:
-    		equip.setSelectedIndex(0);
-    		break;
-    	case 21:
-    		equip.setSelectedIndex(1);
-    		break;
-    	case 22:
-    		equip.setSelectedIndex(2);
-    		break;
-    	case 17:
-    		equip.setSelectedIndex(3);
-    		break;
-    	case 15:
-    		equip.setSelectedIndex(4);
-    		break;
-    	case 26:
-    		if (item.getSubclass() == 3)
-    			equip.setSelectedIndex(5);
-    		else if (item.getSubclass() == 18)
-    			equip.setSelectedIndex(7);
-    		else if (item.getSubclass() == 19)
-    			equip.setSelectedIndex(8);
-    		break;
-    	case 25:
-    		equip.setSelectedIndex(6);
-    		break;
-    	default:
-    		System.err.println("Unknown item equip");
-    		break;
-    	}
-    	
     	switch(item.getSubclass()) {
     	case 0:
+    		// misc
     		subclass.setSelectedIndex(0);
+    		
+    		setMiscEquip();
+    		switch (item.getInventoryType()) {
+    		case 2:
+    			equip.setSelectedIndex(0);
+    			break;
+    		case 11:
+    			equip.setSelectedIndex(1);
+    			break;
+    		case 12:
+    			equip.setSelectedIndex(2);
+    			break;
+    		case 4:
+    			equip.setSelectedIndex(3);
+    			break;
+    		case 19:
+    			equip.setSelectedIndex(4);
+    			break;
+    		default:
+    			break;
+    		}
+    		
     		break;
     	case 1:
+    		// cloth
     		subclass.setSelectedIndex(1);
+    		
+    		setClothEquip();
+    		switch (item.getInventoryType()) {
+    		case 1:
+    			equip.setSelectedIndex(0);
+    			break;
+    		case 3:
+    			equip.setSelectedIndex(1);
+    			break;
+    		case 16:
+    			equip.setSelectedIndex(2);
+    			break;
+    		case 5:
+    			equip.setSelectedIndex(3);
+    			break;
+    		case 9:
+    			equip.setSelectedIndex(4);
+    			break;
+    		case 10:
+    			equip.setSelectedIndex(5);
+    			break;
+    		case 6:
+    			equip.setSelectedIndex(6);
+    			break;
+    		case 7:
+    			equip.setSelectedIndex(7);
+    			break;
+    		case 8:
+    			equip.setSelectedIndex(8);
+    			break;
+    		default:
+    			break;
+    		}
+    		
     		break;
     	case 2:
+    		// leather
     		subclass.setSelectedIndex(2);
+    		
+    		setMainEquip();
+    		switch (item.getInventoryType()) {
+    		case 1:
+    			equip.setSelectedIndex(0);
+    			break;
+    		case 3:
+    			equip.setSelectedIndex(1);
+    			break;
+    		case 5:
+    			equip.setSelectedIndex(2);
+    			break;
+    		case 9:
+    			equip.setSelectedIndex(3);
+    			break;
+    		case 10:
+    			equip.setSelectedIndex(4);
+    			break;
+    		case 6:
+    			equip.setSelectedIndex(5);
+    			break;
+    		case 7:
+    			equip.setSelectedIndex(6);
+    			break;
+    		case 8:
+    			equip.setSelectedIndex(7);
+    			break;
+    		default:
+    			break;
+    		}
+    		
     		break;
     	case 3:
+    		// mail
     		subclass.setSelectedIndex(3);
+    		
+    		setMainEquip();
+    		switch (item.getInventoryType()) {
+    		case 1:
+    			equip.setSelectedIndex(0);
+    			break;
+    		case 3:
+    			equip.setSelectedIndex(1);
+    			break;
+    		case 5:
+    			equip.setSelectedIndex(2);
+    			break;
+    		case 9:
+    			equip.setSelectedIndex(3);
+    			break;
+    		case 10:
+    			equip.setSelectedIndex(4);
+    			break;
+    		case 6:
+    			equip.setSelectedIndex(5);
+    			break;
+    		case 7:
+    			equip.setSelectedIndex(6);
+    			break;
+    		case 8:
+    			equip.setSelectedIndex(7);
+    			break;
+    		default:
+    			break;
+    		}
+    		
     		break;
     	case 4:
+    		// plate
     		subclass.setSelectedIndex(4);
-    		break;
-    	case 5:
-    		subclass.setSelectedIndex(5);
+    		
+    		setMainEquip();
+    		switch (item.getInventoryType()) {
+    		case 1:
+    			equip.setSelectedIndex(0);
+    			break;
+    		case 3:
+    			equip.setSelectedIndex(1);
+    			break;
+    		case 5:
+    			equip.setSelectedIndex(2);
+    			break;
+    		case 9:
+    			equip.setSelectedIndex(3);
+    			break;
+    		case 10:
+    			equip.setSelectedIndex(4);
+    			break;
+    		case 6:
+    			equip.setSelectedIndex(5);
+    			break;
+    		case 7:
+    			equip.setSelectedIndex(6);
+    			break;
+    		case 8:
+    			equip.setSelectedIndex(7);
+    			break;
+    		default:
+    			break;
+    		}
+    		
     		break;
     	case 6:
-    		subclass.setSelectedIndex(6);
+    		// shield
+    		subclass.setSelectedIndex(5);
+    		setShieldEquip();
+    		equip.setSelectedIndex(0);
     		break;
     	case 7:
-    		subclass.setSelectedIndex(7);
+    		// libram
+    		subclass.setSelectedIndex(6);
+    		setRelicEquip();
+    		equip.setSelectedIndex(0);
     		break;
     	case 8:
+    		// idol
+    		subclass.setSelectedIndex(7);
+    		setRelicEquip();
+    		equip.setSelectedIndex(0);
+    		break;
+    	case 9:
+    		// totem
     		subclass.setSelectedIndex(8);
+    		setRelicEquip();
+    		equip.setSelectedIndex(0);
     		break;
     	case 10:
+    		// sigil
     		subclass.setSelectedIndex(9);
-    		break;
-    	case 13:
-    		subclass.setSelectedIndex(10);
-    		break;
-    	case 15:
-    		subclass.setSelectedIndex(11);
-    		break;
-    	case 16:
-    		subclass.setSelectedIndex(12);
-    		break;
-    	case 17:
-    		subclass.setSelectedIndex(13);
-    		break;
-    	case 18:
-    		subclass.setSelectedIndex(14);
-    		break;
-    	case 19:
-    		subclass.setSelectedIndex(15);
+    		setRelicEquip();
+    		equip.setSelectedIndex(0);
     		break;
     	default:
     		System.err.println("Unknown Item Subclass");
@@ -897,6 +1178,13 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     	}
     	
     	bind.setSelectedIndex(item.getBinds());
+    	
+    	if (item.getArmor() != 0)
+    		armor.setText(Integer.toString(item.getArmor()));
+    	if (item.getBlock() != 0)
+    		block.setText(Integer.toString(item.getBlock()));
+    	if (item.getDuribility() != 0)
+    		duribility.setText(Integer.toString(item.getDuribility()));
     	if (item.getReqlvl() != 0)
     		reqlvl.setText(Integer.toString(item.getReqlvl()));
     	if (item.getIlvl() != 0)
@@ -1096,9 +1384,13 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     	desc.setText("");
     	display.setText("");
     	quality.setSelectedIndex(0);
-    	equip.setSelectedIndex(0);
     	subclass.setSelectedIndex(0);
+    	setMiscEquip();
+    	equip.setSelectedIndex(0);
     	bind.setSelectedIndex(0);
+    	armor.setText("");
+    	block.setText("");
+    	duribility.setText("");
     	reqlvl.setText("");
     	ilvl.setText("");
     	unique.setText("");
@@ -1114,6 +1406,41 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     	spelltrigger4.setSelectedIndex(0);
     	spell5.setText("");
     	spelltrigger5.setSelectedIndex(0);
+    }
+    
+    private void setMiscEquip() {
+    	equip.removeAllItems();
+		for (int i = 0; i < miscEquips.length; i++) {
+			equip.addItem(miscEquips[i]);
+		}
+    }
+    
+    private void setClothEquip() {
+    	equip.removeAllItems();
+		for (int i = 0; i < clothEquips.length; i++) {
+			equip.addItem(clothEquips[i]);
+		}
+    }
+    
+    private void setMainEquip() {
+    	equip.removeAllItems();
+		for (int i = 0; i < mainEquips.length; i++) {
+			equip.addItem(mainEquips[i]);
+		}
+    }
+    
+    private void setShieldEquip() {
+    	equip.removeAllItems();
+		for (int i = 0; i < shieldEquip.length; i++) {
+			equip.addItem(shieldEquip[i]);
+		}
+    }
+    
+    private void setRelicEquip() {
+    	equip.removeAllItems();
+		for (int i = 0; i < relicEquip.length; i++) {
+			equip.addItem(relicEquip[i]);
+		}
     }
     
 	@Override
@@ -1187,6 +1514,37 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
 				// entry == 0
 				// No item to insert
 				JOptionPane.showMessageDialog(ItemBuilder.getInstance().getIBFrame(), "You must craft an item first.");
+			}
+		} else if (e.getActionCommand().equals(subclass.getActionCommand())) {
+			switch (subclass.getSelectedIndex()) {
+			case 0:
+				// misc
+				setMiscEquip();
+				break;
+			case 1:
+				// cloth
+				setClothEquip();
+				break;
+			case 2:
+			case 3:
+			case 4:
+				// leather, mail, plate
+				setMainEquip();
+				break;
+			case 5:
+				//shield
+				setShieldEquip();
+				break;
+			case 6:
+			case 7:
+			case 8:
+			case 9:
+				// librams, idols, totems, sigils
+				setRelicEquip();
+				break;
+			default:
+				System.err.println("Unknown subclass clicked");
+				break;
 			}
 		}
 	}

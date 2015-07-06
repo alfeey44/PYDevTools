@@ -55,13 +55,13 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private JButton createItem, insertItem;
 	private ImageIcon anvilImageIcon;
 	private ImageDrawingComponent itemIcon, itemToolTip;
-	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "subclass: ",
-								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Required Level: ","Item Level: ", "Unique: ", "Role: ", 
-								"Stats: ", "Resists: ", "Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ",
-								"Spell 3: ", "Spell 3 Trigger: ", "Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", 
-								"Sockets: " };
+	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Subclass: ",
+								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Duribility: ",
+								"Required Level: ","Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ",
+								"Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ", "Spell 3: ", "Spell 3 Trigger: ",
+								"Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", "Sockets: " };
 	private int numLabels = labels.length;
-	private JTextField name, desc, display, delay, mindamage, maxdamage, armor, block, reqlvl, 
+	private JTextField name, desc, display, delay, mindamage, maxdamage, duribility, reqlvl, 
 					   ilvl, unique, spell1, spell2, spell3, spell4, spell5, socket;
 	private JComboBox<String> quality, equip, subclass, sheath, bind, role, spelltrigger1, spelltrigger2,
 	   						  spelltrigger3, spelltrigger4, spelltrigger5;
@@ -181,100 +181,106 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 					leftPanel.add(maxdamage);
 					break;
 				case 11:
+					duribility = new JTextField(15);
+					duribility.addKeyListener(this);
+					l.setLabelFor(duribility);
+					leftPanel.add(duribility);
+					break;
+				case 12:
 					reqlvl = new JTextField(15);
 					reqlvl.addKeyListener(this);
 					l.setLabelFor(reqlvl);
 					leftPanel.add(reqlvl);
 					break;
-				case 12:
+				case 13:
 					ilvl = new JTextField(15);
 					ilvl.addKeyListener(this);
 					l.setLabelFor(ilvl);
 					leftPanel.add(ilvl);
 					break;
-				case 13:
+				case 14:
 					unique = new JTextField(15);
 					unique.addKeyListener(this);
 					l.setLabelFor(unique);
 					leftPanel.add(unique);
 					break;
-				case 14:
+				case 15:
 					role = new JComboBox<String>(roles);
 					role.setSelectedIndex(0);
 					l.setLabelFor(role);
 					leftPanel.add(role);
 					break;
-				case 15:
+				case 16:
 					selectedStats = new JList<String>(stats);
 					l.setLabelFor(selectedStats);
 					leftPanel.add(selectedStats);
 					break;
-				case 16:
+				case 17:
 					selectedResists = new JList<String>(resists);
 					l.setLabelFor(selectedResists);
 					leftPanel.add(selectedResists);
 					break;
-				case 17:
+				case 18:
 					spell1 = new JTextField(15);
 					spell1.addKeyListener(this);
 					l.setLabelFor(spell1);
 					leftPanel.add(spell1);
 					break;
-				case 18:
+				case 19:
 					spelltrigger1 = new JComboBox<String>(spelltriggers);
 					spelltrigger1.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger1);
 					leftPanel.add(spelltrigger1);
 					break;
-				case 19:
+				case 20:
 					spell2 = new JTextField(15);
 					spell2.addKeyListener(this);
 					l.setLabelFor(spell2);
 					leftPanel.add(spell2);
 					break;
-				case 20:
+				case 21:
 					spelltrigger2 = new JComboBox<String>(spelltriggers);
 					spelltrigger2.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger2);
 					leftPanel.add(spelltrigger2);
 					break;
-				case 21:
+				case 22:
 					spell3 = new JTextField(15);
 					spell3.addKeyListener(this);
 					l.setLabelFor(spell3);
 					leftPanel.add(spell3);
 					break;
-				case 22:
+				case 23:
 					spelltrigger3 = new JComboBox<String>(spelltriggers);
 					spelltrigger3.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger3);
 					leftPanel.add(spelltrigger3);
 					break;
-				case 23:
+				case 24:
 					spell4 = new JTextField(15);
 					spell4.addKeyListener(this);
 					l.setLabelFor(spell4);
 					leftPanel.add(spell4);
 					break;
-				case 24:
+				case 25:
 					spelltrigger4 = new JComboBox<String>(spelltriggers);
 					spelltrigger4.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger4);
 					leftPanel.add(spelltrigger4);
 					break;
-				case 25:
+				case 26:
 					spell5 = new JTextField(15);
 					spell5.addKeyListener(this);
 					l.setLabelFor(spell5);
 					leftPanel.add(spell5);
 					break;
-				case 26:
+				case 27:
 					spelltrigger5 = new JComboBox<String>(spelltriggers);
 					spelltrigger5.setSelectedIndex(0);
 					l.setLabelFor(spelltrigger5);
 					leftPanel.add(spelltrigger5);
 					break;
-				case 27:
+				case 28:
 					socket = new JTextField(15);
 					socket.addKeyListener(this);
 					l.setLabelFor(socket);
@@ -419,6 +425,9 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		if (!maxdamage.getText().isEmpty()) {
 			item.setMaxDamage(Integer.parseInt(maxdamage.getText()));
 		}
+		
+		if (!duribility.getText().isEmpty())
+			item.setDuribility(Integer.parseInt(duribility.getText()));
 		
 		if (!reqlvl.getText().isEmpty()) {
 			item.setReqlvl(Integer.parseInt(reqlvl.getText()));
@@ -986,6 +995,8 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     		mindamage.setText(Integer.toString(item.getMinDamage()));
     	if (item.getMaxDamage() != 0)
     		maxdamage.setText(Integer.toString(item.getMaxDamage()));
+    	if (item.getDuribility() != 0)
+    		duribility.setText(Integer.toString(item.getDuribility()));
     	if (item.getReqlvl() != 0)
     		reqlvl.setText(Integer.toString(item.getReqlvl()));
     	if (item.getIlvl() != 0)
@@ -1192,6 +1203,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
     	delay.setText("");
     	mindamage.setText("");
     	maxdamage.setText("");
+    	duribility.setText("");
     	reqlvl.setText("");
     	ilvl.setText("");
     	unique.setText("");
