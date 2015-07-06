@@ -193,6 +193,11 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 			        				System.out.println("Send Weapon to Weapon Tab");
 			        				WeaponPanel.getInstance().setCurrentWeapon(clickedItem);
 			        				ItemBuilder.getInstance().goToWeaponTab();
+			        			} else if (clickedItem.getItemType() == ItemType.armor) {
+			        				// send to armor tab
+			        				System.out.println("Send armor to armor Tab");
+			        				ArmorPanel.getInstance().setCurrentItem(clickedItem);
+			        				ItemBuilder.getInstance().goToArmorTab();
 			        			}
 			        			// 
 			        		} else {
@@ -295,9 +300,14 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 						// used when adding component
 						revalidate();
 					}
+				} catch(NullPointerException npe) {
+					// Set error
+					System.err.println("Not connected to db");
+					itemSearchStatusLabel.setText("Can't connect to database");
+					itemSearchStatusLabel.setForeground(Color.red);
+					itemSearchStatusLabel.setVisible(true);
 				} catch (Exception exeption) {
 					exeption.printStackTrace();
-					System.out.println("Item not found with given entry.");
 				}
 				search.setEnabled(true);
 			}

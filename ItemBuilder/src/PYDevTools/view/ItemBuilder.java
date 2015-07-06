@@ -104,7 +104,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		tabbedPane.addTab("Weapon", weaponTabIcon, wepPanel, "Build Weapons");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_W);
 		// Armor Tab
-		armorPanel = new ArmorPanel();
+		armorPanel = ArmorPanel.getInstance();
 		armorTabIcon = new ImageIcon("src/icons/WoWIcons/INV_Chest_Plate03.png");
 		tabbedPane.addTab("Armor",  armorTabIcon, armorPanel, "Build Armor");
 		tabbedPane.setMnemonicAt(1, KeyEvent.VK_A);
@@ -211,6 +211,10 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	
 	public void goToWeaponTab() {
 		tabbedPane.setSelectedIndex(0);
+	}
+	
+	public void goToArmorTab() {
+		tabbedPane.setSelectedIndex(1);
 	}
 	
 	public JFrame getIBFrame() {
