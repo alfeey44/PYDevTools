@@ -56,7 +56,7 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 	private ImageIcon anvilImageIcon;
 	private ImageDrawingComponent itemIcon, itemToolTip;
 	private String[] labels = { "Name: ", "Description: ", "Display:", "Quality: ", "Equip: ", "Subclass: ",
-								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage:", "Duribility: ",
+								"Sheath: ", "Binds: ", "Delay: ", "Min Damage: ", "Max Damage: ", "Duribility: ",
 								"Required Level: ","Item Level: ", "Unique: ", "Role: ", "Stats: ", "Resists: ",
 								"Spell 1: ", "Spell 1 Trigger: ", "Spell 2: ", "Spell 2 Trigger: ", "Spell 3: ", "Spell 3 Trigger: ",
 								"Spell 4: ", "Spell 4 Trigger: ", "Spell 5: ", "Spell 5 Trigger: ", "Sockets: " };
@@ -295,6 +295,9 @@ public class WeaponPanel extends JPanel implements FocusListener, ActionListener
 		rightLayout = new SpringLayout();
 		rightPanel = new JPanel(rightLayout);
 		rightPane = new JScrollPane(rightPanel);
+		rightPane.setPreferredSize(new Dimension(850, 650));
+		rightPane.getVerticalScrollBar().setUnitIncrement(16);
+		
 		// Item Icon
 		try {
 			itemIcon = new ImageDrawingComponent(new File("src/icons/Inv_misc_questionmark.png").toURI().toURL());

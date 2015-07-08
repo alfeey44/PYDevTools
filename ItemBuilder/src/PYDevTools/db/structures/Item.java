@@ -16,7 +16,7 @@ public class Item {
 				pageMaterial, startQuest, lockID, material, randomProperty, randomSuffix, itemSet, area, 
 				map, bagFamily, totemCategory, socketBonus, gemProperties, requiredDisenchantSkill, 
 				armorDamageModifier, duration, itemLimitCategory, holidayID, disenchantID, foodType, 
-				minMoneyLoot, maxMoneyLoot, flagsCustom, verfiedBuild;
+				minMoneyLoot, maxMoneyLoot, flagsCustom, verifiedBuild;
 
 	private int[] stat_values;
 	private int[] stat_types;
@@ -780,12 +780,12 @@ public class Item {
 		this.flagsCustom = flagsCustom;
 	}
 
-	public int getVerfiedBuild() {
-		return verfiedBuild;
+	public int getVerifiedBuild() {
+		return verifiedBuild;
 	}
 
-	public void setVerfiedBuild(int verfiedBuild) {
-		this.verfiedBuild = verfiedBuild;
+	public void setVerifiedBuild(int verifiedBuild) {
+		this.verifiedBuild = verifiedBuild;
 	}
 
 	public int[] getStat_values() {
