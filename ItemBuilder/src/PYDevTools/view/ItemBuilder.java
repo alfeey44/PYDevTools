@@ -181,7 +181,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("settings")) {
 			// Open Settings Frame
-			settingsFrame.setVisible(true);
+			openSettingsPanel();
 		} else if (e.getActionCommand().equals("serverconfigurations")) {
 			// Open Server Configuration Frame
 			serverConfigFrame.setVisible(true);
@@ -219,5 +219,9 @@ public class ItemBuilder extends JFrame implements ActionListener {
 	
 	public JFrame getIBFrame() {
 		return IBFrame;
+	}
+	
+	public void openSettingsPanel() {
+		settingsFrame.setVisible(true);
 	}
 }

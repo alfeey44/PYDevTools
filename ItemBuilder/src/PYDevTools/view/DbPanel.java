@@ -306,6 +306,7 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 					itemSearchStatusLabel.setText("Can't connect to database");
 					itemSearchStatusLabel.setForeground(Color.red);
 					itemSearchStatusLabel.setVisible(true);
+					ItemBuilder.getInstance().openSettingsPanel();
 				} catch (Exception exeption) {
 					exeption.printStackTrace();
 				}

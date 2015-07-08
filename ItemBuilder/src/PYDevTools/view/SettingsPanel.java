@@ -39,7 +39,7 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 	private JPanel dbInfoPanel;
 	private JTextField dbUser, dbName, dbHost, nextEntryIDField;
 	private JPasswordField dbPass;
-	private JLabel dbUserLabel, dbPassLabel, dbNameLabel, dbHostLabel, saveSuccessLabel,
+	private JLabel dbUserLabel, dbPassLabel, dbNameLabel, dbHostLabel,
 				   saveFailLabel, nextEntryIDLabel;
 	private JButton save;
 	private Font defaultFont, saveFont;
@@ -57,7 +57,7 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 		setLayout(layout);
 		
 		defaultFont = new Font("Arial", Font.PLAIN, 20);
-		saveFont = new Font("Arial", Font.ITALIC, 28);
+		saveFont = new Font("Arial", Font.ITALIC, 20);
 		
 		dbInfoPanel = new JPanel(new SpringLayout());
 		SpringLayout.Constraints dbInfoPanelCons = layout.getConstraints(dbInfoPanel);
@@ -123,15 +123,12 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 		
 		SpringUtilities.makeCompactGrid(dbInfoPanel, 5, 2, 10, 10, 5, 10);
 		
-		saveSuccessLabel = new JLabel("Settings Saved Successfully!");
-		saveSuccessLabel.setFont(saveFont);
-		SpringLayout.Constraints saveSuccessLabelCons = layout.getConstraints(saveSuccessLabel);
-		saveSuccessLabel.setVisible(false);
-		add(saveSuccessLabel);
-		
 		saveFailLabel = new JLabel("Settings Saved Failed!");
 		saveFailLabel.setFont(saveFont);
+		saveFailLabel.setForeground(Color.red);
 		SpringLayout.Constraints saveFailLabelCons = layout.getConstraints(saveFailLabel);
+		saveFailLabelCons.setX(Spring.constant(280));
+		saveFailLabelCons.setY(Spring.constant(325));
 		saveFailLabel.setVisible(false);
 		add(saveFailLabel);
 		
@@ -157,23 +154,6 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 		
 		return instance;
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Save")) {
-			setDBUserName(getDBUserText());
-			setDBPassword(getDBPassText());
-			setDBWorldName(getDBNameText());
-			setDBHostName(getDBHostText());
-			if (nextEntryIDField.getText().isEmpty()) {
-				setNextEntryID("100000");
-			} else {
-				setNextEntryID(nextEntryIDField.getText());
-			}
-			writeDBConfigFile();
-			settingsFrame.dispatchEvent(new WindowEvent(settingsFrame, WindowEvent.WINDOW_CLOSING));
-		}
-	}
 	
 	private void writeDBConfigFile() {
 		Writer writer = null;
@@ -193,15 +173,12 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 			writer.write("next entry: " + nextEntryID);
 		} catch (IOException e) {
 			saveFailLabel.setForeground(Color.red);
-			saveSuccessLabel.setVisible(false);
 			saveFailLabel.setVisible(true);
 			e.printStackTrace();
 		} finally {
 			try {
 				writer.close();
-				saveSuccessLabel.setForeground(Color.green);
 				saveFailLabel.setVisible(false);
-				saveSuccessLabel.setVisible(true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -262,7 +239,6 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 					System.out.println("No entry in settings... Setting to default.");
 			    	nextEntryID = "100000";
 			    	nextEntryIDField.setText(nextEntryID);
-			    	//TODO fill in field
 				}
 			} else {
 				System.err.println("Unknown field in database configuration file.");
@@ -336,6 +312,23 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 	public void setNextEntryID(String nextEntryID) {
 		this.nextEntryID = nextEntryID;
 		nextEntryIDField.setText(nextEntryID);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("Save")) {
+			setDBUserName(getDBUserText());
+			setDBPassword(getDBPassText());
+			setDBWorldName(getDBNameText());
+			setDBHostName(getDBHostText());
+			if (nextEntryIDField.getText().isEmpty()) {
+				setNextEntryID("100000");
+			} else {
+				setNextEntryID(nextEntryIDField.getText());
+			}
+			writeDBConfigFile();
+			settingsFrame.dispatchEvent(new WindowEvent(settingsFrame, WindowEvent.WINDOW_CLOSING));
+		}
 	}
 
 	@Override
