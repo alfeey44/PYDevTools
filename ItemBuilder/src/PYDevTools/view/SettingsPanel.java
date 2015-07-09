@@ -123,11 +123,11 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 		
 		SpringUtilities.makeCompactGrid(dbInfoPanel, 5, 2, 10, 10, 5, 10);
 		
-		saveFailLabel = new JLabel("Settings Saved Failed!");
+		saveFailLabel = new JLabel("Save Failed!");
 		saveFailLabel.setFont(saveFont);
 		saveFailLabel.setForeground(Color.red);
 		SpringLayout.Constraints saveFailLabelCons = layout.getConstraints(saveFailLabel);
-		saveFailLabelCons.setX(Spring.constant(280));
+		saveFailLabelCons.setX(Spring.constant(295));
 		saveFailLabelCons.setY(Spring.constant(325));
 		saveFailLabel.setVisible(false);
 		add(saveFailLabel);
