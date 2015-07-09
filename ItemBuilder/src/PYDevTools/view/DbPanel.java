@@ -282,14 +282,11 @@ public class DbPanel extends JPanel implements ActionListener, KeyListener {
 							row.add(2, dbItems.get(i).getDescription());
 							
 							tableData.add(row);
+							tableScrollPane.getViewport().revalidate();
+							tableScrollPane.getViewport().repaint();
 						}
 						// get rid of status message
 						itemSearchStatusLabel.setVisible(false);
-						// Needed to repaint the panel
-						tableScrollPane.getViewport().revalidate();
-						tableScrollPane.getViewport().repaint();
-						repaint();
-						revalidate();
 					} else {
 						// Item not found
 						itemSearchStatusLabel.setText("No items found");
