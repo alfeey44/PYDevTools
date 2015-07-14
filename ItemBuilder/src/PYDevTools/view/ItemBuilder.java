@@ -66,7 +66,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		settingsMenu.add(serverConfigurationsMenuItem);
 		
 		// Theme Menu
-		themesMenu = new JMenu("Themes");
+		/*themesMenu = new JMenu("Themes");
 		themesMenu.setMnemonic(KeyEvent.VK_F2);
 		menuBar.add(themesMenu);
 		
@@ -94,6 +94,7 @@ public class ItemBuilder extends JFrame implements ActionListener {
 		themesGroup.add(webThemeMenuItem);
 		themesGroup.add(darkThemeMenuItem);
 		
+		*/
 		setJMenuBar(menuBar);
 		
 		// Tabbed Pane
