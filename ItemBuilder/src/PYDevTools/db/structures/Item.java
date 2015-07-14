@@ -85,6 +85,9 @@ public class Item {
 		
 		duribility = 0;
 		soundOverrideSubclass = -1;
+		allowableClass = -1;
+		allowableRace = -1;
+		buyCount = 1;
 		scriptName = "";
 	}
 
