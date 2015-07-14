@@ -312,6 +312,7 @@ public class SettingsPanel extends JPanel implements ActionListener, KeyListener
 	public void setNextEntryID(String nextEntryID) {
 		this.nextEntryID = nextEntryID;
 		nextEntryIDField.setText(nextEntryID);
+		writeDBConfigFile();
 	}
 	
 	@Override

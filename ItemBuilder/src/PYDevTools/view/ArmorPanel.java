@@ -364,11 +364,12 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     		entry++;
     		blockCounter++;
     		// in case it is stuck in a large block, it will run somewhat faster
-    		if (blockCounter == 3) {
+    		if (blockCounter == 5) {
     			entry += 10;
     			blockCounter = 1;
     		}
     	}
+    	SettingsPanel.getInstance().setNextEntryID(String.valueOf(entry));
     	item.setEntry(entry);
     	
     	// Crafting armor
