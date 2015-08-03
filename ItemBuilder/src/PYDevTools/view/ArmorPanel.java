@@ -838,7 +838,7 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     		case 7:
     		case 13:
     		case 15:
-    			subclassMultiplier = 0.85f;
+    			subclassMultiplier = Float.parseFloat(serverConfigPanel.getOneHandStatMultiplier());
     			break;
     		// ranged
     		case 2:
@@ -847,7 +847,7 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     		case 17:
     		case 18:
     		case 19:
-    			subclassMultiplier = 1.15f;
+    			subclassMultiplier = Float.parseFloat(serverConfigPanel.getRangedStatMultiplier());
     			break;
     		// Two handers
     		case 1:
@@ -855,43 +855,56 @@ public class ArmorPanel extends JPanel implements FocusListener, ActionListener,
     		case 6:
     		case 8:
     		case 10:
-    			subclassMultiplier = 1.55f;
+    			subclassMultiplier = Float.parseFloat(serverConfigPanel.getTwoHandStatMultiplier());
     			break;
     		default:
     			break;
     		}
     		
-    		double serverArmorMultiplier = Double.parseDouble(serverConfigPanel.getArmorStatMultiplier());
+    		// TODO: Make this serverMultiplier an option
+    		float serverWeaponMultiplier = Float.parseFloat(serverConfigPanel.getWeaponStatMultiplier());
     		// Do calculation for value based off of quality and ilvl and subclass
     		
     		switch(restistToCalc[i]) {
     		case 0: //fire
-    			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+    			resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+    			if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases fire resist by ";
     			item.setFire_resist((int)resistValue);
     			break;
     		case 1: //frost
-    			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+    			resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+    			if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases frost resist by ";
     			item.setFrost_resist((int)resistValue);
     			break;
     		case 2: //shadow
-    			resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+    			resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+    			if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases shadow resist by ";
     			item.setShadow_resist((int)resistValue);
     			break;
 			case 3: //holy
-				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+				resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+				if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases holy resist by ";
     			item.setHoly_resist((int)resistValue);
 			    break;
 			case 4: //nature
-				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+				resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+				if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases nature resist by ";
     			item.setNature_resist((int)resistValue);
 				break;
 			case 5: //arcane
-				resistValue = subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/6;
+				resistValue = serverWeaponMultiplier*subclassMultiplier*statMultiplier*item.getIlvl()*item.getQuality()/12;
+				if (resistValue > 254)
+    				resistValue = (float) (240 + (Math.random() * 14));
     			resistText = "Equip: Increases nature resist by ";
     			item.setArcane_resist((int)resistValue);
 				break;

@@ -501,7 +501,7 @@ public class ItemToolTip extends ImageDrawingComponent {
 				incrementLines();
 				TTmindamage.setText(String.valueOf(item.getMinDamage()));
 				TTmindamage.setLocation(10, toolTipHeight);
-				TTmaxdamage.setText(" - " + item.getMaxDamage());
+				TTmaxdamage.setText(" - " + item.getMaxDamage() + " Damage");
 				TTmaxdamage.setLocation(TTmindamage.getText().length()*15+10, toolTipHeight);
 				TTdelay.setText("Speed " + item.getDelay()/1000.0f + "0");
 				TTdelay.setLocation(410, toolTipHeight);
